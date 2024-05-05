@@ -1,7 +1,13 @@
-all: example
+CC = g++
+ASMBIN = nasm
 
-main.o:  main.asm
-	nasm -f macho64 main.asm
-
-example: main.o
-	g++ -std=c++17 -Wall -o example main.cpp main.o -arch x86_64 -ld_classic
+all:	asm cc link 
+asm:	   
+	$(ASMBIN) -f macho64 func.asm
+cc:	
+	$(CC) -std=c++17 -Wall -arch x86_64 -c -g -O0 main.cpp 
+link:	asm cc
+	$(CC) -o example main.o func.o -arch x86_64 -ld_classic
+clean:
+	rm *.o
+	rm example

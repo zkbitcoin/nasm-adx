@@ -2,26 +2,20 @@
 #include <stdlib.h>
 #include <inttypes.h>
 
-extern "C" uint64_t asm_compute(uint64_t n1, uint64_t n2, uint64_t n3);
-extern "C" void asm_add_chains_adox();
-extern "C" void asm_add_chains_add();
+extern "C" void Fr_rawMMul(uint64_t result[4], const uint64_t a[4], const uint64_t b[4]);
+
 
 int main(int argc, char* argv[]) {
-  if (argc < 4) {
-    printf("Not enough arguments.\nUsage: %s [n1] [n2] [n3]\n", argv[0]);
-    return EXIT_FAILURE;
-  }
 
-  int64_t n1 = strtoull(argv[1], NULL, 10);
-  int64_t n2 = strtoull(argv[2], NULL, 10);
-  int64_t n3 = strtoull(argv[3], NULL, 10);
 
-  int64_t result = asm_compute(n1, n2, n3);
-  printf("asm_compute(%lld, %lld, %lld) = %lld\n", n1, n2, n3, result);
+  uint64_t limbs_a[4] = {0,0,0,0};
+  uint64_t limbs_b[4] = {1,2,3,4};
+  uint64_t limbs_c[4] = {5,6,7,8};
 
-  asm_add_chains_adox();
+  Fr_rawMMul(limbs_a,  limbs_b,  limbs_c);
 
-  asm_add_chains_add();
+  for (size_t i = 0; i < 4; ++i)
+    printf("limbs_a[%zu] is %" PRIu64 "\n", i, limbs_a[i]);
 
   return EXIT_SUCCESS;
 }

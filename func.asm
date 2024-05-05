@@ -1,90 +1,178 @@
-global _asm_compute
-global _asm_add_chains_adox
-global _asm_add_chains_add
-
-section .data
-    chain1 dd 1, 2, 3, 4, 5    ; First chain of numbers
-    chain2 dd 6, 7, 8, 9, 10   ; Second chain of numbers
-    result dd 0, 0, 0, 0, 0    ; Resultant chain
-
+global Fr_rawMMul
+DEFAULT REL
 
 section .text
 
-; (n1 * 8 + n2 / 4) * (n3 - 5)
+Fr_rawMMul:
+    push r15
+    push r14
+    push r13
+    push r12
+    mov rcx,rdx
+    mov r9,[ np ]
+    xor r10,r10
 
-; RDI - n1
-; RSI - n2
-; RDX - n3
-_asm_compute:
+; FirstLoop
+    mov rdx,[rsi + 0]
+    mulx rax,r11,[rcx]
+    mulx r8,r12,[rcx +8]
+    adcx r12,rax
+    mulx rax,r13,[rcx +16]
+    adcx r13,r8
+    mulx r8,r14,[rcx +24]
+    adcx r14,rax
+    mov r15,r10
+    adcx r15,r8
+; SecondLoop
+    mov rdx,r9
+    mulx rax,rdx,r11
+    mulx r8,rax,[q]
+    adcx rax,r11
+    mulx rax,r11,[q +8]
+    adcx r11,r8
+    adox r11,r12
+    mulx r8,r12,[q +16]
+    adcx r12,rax
+    adox r12,r13
+    mulx rax,r13,[q +24]
+    adcx r13,r8
+    adox r13,r14
+    mov r14,r10
+    adcx r14,rax
+    adox r14,r15
 
-  sub rdx, 5    ; calculate 2nd part
+; FirstLoop
+    mov rdx,[rsi + 8]
+    mov r15,r10
+    mulx r8,rax,[rcx +0]
+    adcx r11,rax
+    adox r12,r8
+    mulx r8,rax,[rcx +8]
+    adcx r12,rax
+    adox r13,r8
+    mulx r8,rax,[rcx +16]
+    adcx r13,rax
+    adox r14,r8
+    mulx r8,rax,[rcx +24]
+    adcx r14,rax
+    adox r15,r8
+    adcx r15,r10
+; SecondLoop
+    mov rdx,r9
+    mulx rax,rdx,r11
+    mulx r8,rax,[q]
+    adcx rax,r11
+    mulx rax,r11,[q +8]
+    adcx r11,r8
+    adox r11,r12
+    mulx r8,r12,[q +16]
+    adcx r12,rax
+    adox r12,r13
+    mulx rax,r13,[q +24]
+    adcx r13,r8
+    adox r13,r14
+    mov r14,r10
+    adcx r14,rax
+    adox r14,r15
 
-  shl rdi, 3    ; multiply by 2^3 : rdi = n1 * 8
-  shr rsi, 2    ; divide by 4     : rsi = n2 / 4
+; FirstLoop
+    mov rdx,[rsi + 16]
+    mov r15,r10
+    mulx r8,rax,[rcx +0]
+    adcx r11,rax
+    adox r12,r8
+    mulx r8,rax,[rcx +8]
+    adcx r12,rax
+    adox r13,r8
+    mulx r8,rax,[rcx +16]
+    adcx r13,rax
+    adox r14,r8
+    mulx r8,rax,[rcx +24]
+    adcx r14,rax
+    adox r15,r8
+    adcx r15,r10
+; SecondLoop
+    mov rdx,r9
+    mulx rax,rdx,r11
+    mulx r8,rax,[q]
+    adcx rax,r11
+    mulx rax,r11,[q +8]
+    adcx r11,r8
+    adox r11,r12
+    mulx r8,r12,[q +16]
+    adcx r12,rax
+    adox r12,r13
+    mulx rax,r13,[q +24]
+    adcx r13,r8
+    adox r13,r14
+    mov r14,r10
+    adcx r14,rax
+    adox r14,r15
 
-  add rdi, rsi  ; rdi = n1*8 + n2/4
+; FirstLoop
+    mov rdx,[rsi + 24]
+    mov r15,r10
+    mulx r8,rax,[rcx +0]
+    adcx r11,rax
+    adox r12,r8
+    mulx r8,rax,[rcx +8]
+    adcx r12,rax
+    adox r13,r8
+    mulx r8,rax,[rcx +16]
+    adcx r13,rax
+    adox r14,r8
+    mulx r8,rax,[rcx +24]
+    adcx r14,rax
+    adox r15,r8
+    adcx r15,r10
+; SecondLoop
+    mov rdx,r9
+    mulx rax,rdx,r11
+    mulx r8,rax,[q]
+    adcx rax,r11
+    mulx rax,r11,[q +8]
+    adcx r11,r8
+    adox r11,r12
+    mulx r8,r12,[q +16]
+    adcx r12,rax
+    adox r12,r13
+    mulx rax,r13,[q +24]
+    adcx r13,r8
+    adox r13,r14
+    mov r14,r10
+    adcx r14,rax
+    adox r14,r15
 
-  mov rax, rdx  ; rax = n3 - 5
-  mul rdi       ; rax = (n3 - 5) * (n1*8 + n2/4)
-
-  ;result is already in rax
-  ret
-
-  _asm_add_chains_adox:
-      ; Load pointers to the start of each chain
-      lea rsi, [rel chain1]  ; Load effective address of chain1 (RIP-relative addressing)
-      lea rdi, [rel chain2]  ; Load effective address of chain2 (RIP-relative addressing)
-
-      ; Calculate the relative offset of result
-      lea rax, [rel _asm_add_chains_adox]   ; Load the address of _start (RIP-relative addressing)
-      lea rbx, [rel result]   ; Load the address of result (RIP-relative addressing)
-      sub rbx, rax            ; Calculate the relative offset between _start and result
-
-      ; Add the relative offset of result to rbp to obtain the absolute address
-      lea rbx, [rbp + rbx]    ; Load the absolute address of result into rbx
-
-      ; Iterate over each element in the chains
-      mov ecx, 5              ; Number of elements in the chains
-      _asm_add_chains_adox_loop:
-          mov eax, [rsi]      ; Load element from chain1
-          adox eax, [rdi]     ; Add element from chain2 with carry
-          mov [rbx], eax      ; Store result in result chain
-          add rsi, 4          ; Move to the next element in chain1
-          add rdi, 4          ; Move to the next element in chain2
-          add rbx, 4          ; Move to the next element in the result chain
-          loop _asm_add_chains_adox_loop      ; Loop for all elements
-
-      ; At this point, the result chain contains the sum of chain1 and chain2
-
-      ; End of program
-      ; Exit code here
-
-_asm_add_chains_add:
-    ; Load pointers to the start of each chain
-    lea rsi, [rel chain1]  ; Load effective address of chain1 (RIP-relative addressing)
-    lea rdi, [rel chain2]  ; Load effective address of chain2 (RIP-relative addressing)
-
-    ; Calculate the relative offset of result
-    lea rax, [rel _asm_add_chains_add]   ; Load the address of _start (RIP-relative addressing)
-    lea rbx, [rel result]   ; Load the address of result (RIP-relative addressing)
-    sub rbx, rax            ; Calculate the relative offset between _start and result
-
-    ; Add the relative offset of result to rbp to obtain the absolute address
-    lea rbx, [rbp + rbx]    ; Load the absolute address of result into rbx
-
-    ; Iterate over each element in the chains
-    mov ecx, 5              ; Number of elements in the chains
-    _asm_add_chains_add_loop:
-        mov eax, [rsi]      ; Load element from chain1
-        add eax, [rdi]      ; Add element from chain2
-        mov [rbx], eax      ; Store result in result chain
-        add rsi, 4          ; Move to the next element in chain1
-        add rdi, 4          ; Move to the next element in chain2
-        add rbx, 4          ; Move to the next element in the result chain
-        loop _asm_add_chains_add_loop      ; Loop for all elements
-
-    ; At this point, the result chain contains the sum of chain1 and chain2
-
-    ; End of program
-    ; Exit code here
+;comparison
+    cmp r14,[q + 24]
+    jc Fr_rawMMul_done
+    jnz Fr_rawMMul_sq
+    cmp r13,[q + 16]
+    jc Fr_rawMMul_done
+    jnz Fr_rawMMul_sq
+    cmp r12,[q + 8]
+    jc Fr_rawMMul_done
+    jnz Fr_rawMMul_sq
+    cmp r11,[q + 0]
+    jc Fr_rawMMul_done
+    jnz Fr_rawMMul_sq
+Fr_rawMMul_sq:
+    sub r11,[q +0]
+    sbb r12,[q +8]
+    sbb r13,[q +16]
+    sbb r14,[q +24]
+Fr_rawMMul_done:
+    mov [rdi + 0],r11
+    mov [rdi + 8],r12
+    mov [rdi + 16],r13
+    mov [rdi + 24],r14
+    pop r12
+    pop r13
+    pop r14
+    pop r15
     ret
+
+section .data
+
+q       dq      0x43e1f593f0000001,0x2833e84879b97091,0xb85045b68181585d,0x30644e72e131a029
+np      dq      0xc2e1f593efffffff

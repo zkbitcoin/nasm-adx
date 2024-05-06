@@ -9,6 +9,7 @@ section .text
 
 Fr_rawMMul_fallback:
 
+    push rdi
     push r15
     push r14
     push r13
@@ -154,7 +155,7 @@ Fr_rawMMul_fallback:
     mulx rdx, r8, [ np ]                ; (rdx, _) <- k = r[1] * r_inv
     mulx r8, r9, [q + 0]                ; (t[0], t[1]) <- (modulus.data[0] * k)
     mulx  rdi, r11, [q + 8]             ; (t[2], t[3]) <- (modulus.data[1] * k)
-    add r10, r8                         ; r[3] += t[0] (%rsi now free)
+    add r10, r8                         ; r[3] += t[0] (rsi now free)
     adc r12,r9                          ; r[4] += t[2] + flag_c
     adc r13, r11                        ; r[5] += t[3] + flag_c
     adc r14, $0                         ; r[6] += flag_c
@@ -169,14 +170,15 @@ Fr_rawMMul_fallback:
     add r14, rdi                        ; r[6] += t[5] + flag_c
     adc r15, $0,                        ; r[7] += flag_c
 
-    mov [rdi + 0], r12
-    mov [rdi + 8], r13
-    mov [rdi + 16],r14
-    mov [rdi + 24], r15
     pop r12
     pop r13
     pop r14
     pop r15
+    pop rdi
+    mov [rdi + 0], r12
+    mov [rdi + 8], r13
+    mov [rdi + 16],r14
+    mov [rdi + 24], r15
     ret
 
 section .data

@@ -3,6 +3,10 @@ DEFAULT REL
 
 section .text
 
+; RDI - (result)
+; RSI - a
+; RDX - b
+
 Fr_rawMMul:
     push r15
     push r14

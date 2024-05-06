@@ -9,11 +9,11 @@ section .text
 
 Fr_rawMMul_fallback:
 
-    push rdi
     push r15
     push r14
     push r13
     push r12
+    push rdi
 
     mov rcx, rdx                        ; load b into rcx
 
@@ -170,15 +170,18 @@ Fr_rawMMul_fallback:
     add r14, rdi                        ; r[6] += t[5] + flag_c
     adc r15, $0,                        ; r[7] += flag_c
 
-    pop r12
-    pop r13
-    pop r14
-    pop r15
     pop rdi
+
     mov [rdi + 0], r12
     mov [rdi + 8], r13
     mov [rdi + 16],r14
     mov [rdi + 24], r15
+
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+
     ret
 
 section .data

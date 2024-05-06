@@ -60,8 +60,8 @@ Fr_rawMMul_fallback:
     ; N.B. the value of r[4] now has a max of 63 bits and can accept another 62 bit value before overflowing   
                                                                                                                     
     ; a[1] * b                                                                                                  
-    mov rdx, [rcx + 0],                 ; load a[1] into rdx
-    mulx r8, r9, [rcx + 0],             ; (t[0], t[1]) <- (a[1] * b[0])
+    mov rdx, [rcx + 8],                 ; load a[1] into rdx
+    mulx r8, r9, [rcx + 0]              ; (t[0], t[1]) <- (a[1] * b[0])
     mulx rdi, r11, [rcx + 8]            ; (t[4], t[5]) <- (a[1] * b[1])
     add r14, r8                         ; r[1] += t[0] + flag_c
     adc r15, rdi                        ; r[2] += t[0] + flag_c

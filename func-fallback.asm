@@ -19,10 +19,10 @@ Fr_rawMMul_fallback:
     mov rdx, [rcx + 0]                  ; load a[0] into rdx
     xor r8, r8                          ; clear r10 register, we use this when we need 0
     ; front-load mul ops, can parallelize 4 of these but latency is 4 cycles
-    mulx r8, r9, [rdx + 8]              ; (t[0], t[1]) <- a[0] * b[1]
-    mulx rdi, r12, [rdx + 24]           ; (t[2], r[4]) <- a[0] * b[3] (overwrite a[0])
-    mulx r13, r14, [rdx + 0]            ; (r[0], r[1]) <- a[0] * b[0]
-    mulx r15, r10, [rdx + 16]           ; (r[2] , r[3]) <- a[0] * b[2]
+    mulx r8, r9, [rcx + 8]              ; (t[0], t[1]) <- a[0] * b[1]
+    mulx rdi, r12, [rcx + 24]           ; (t[2], r[4]) <- a[0] * b[3] (overwrite a[0])
+    mulx r13, r14, [rcx + 0]            ; (r[0], r[1]) <- a[0] * b[0]
+    mulx r15, r10, [rcx + 16]           ; (r[2] , r[3]) <- a[0] * b[2]
     ; zero flags
 
     ; start computing modular reduction                                                                         
@@ -60,16 +60,16 @@ Fr_rawMMul_fallback:
                                                                                                                     
     ; a[1] * b                                                                                                  
     mov rdx, [rcx + 0],                 ; load a[1] into rdx
-    mulx r8, r9, [rdx + 0],             ; (t[0], t[1]) <- (a[1] * b[0])
-    mulx rdi, r11, [rdx + 8]            ; (t[4], t[5]) <- (a[1] * b[1])
+    mulx r8, r9, [rcx + 0],             ; (t[0], t[1]) <- (a[1] * b[0])
+    mulx rdi, r11, [rcx + 8]            ; (t[4], t[5]) <- (a[1] * b[1])
     add r14, r8                         ; r[1] += t[0] + flag_c
     adc r15, rdi                        ; r[2] += t[0] + flag_c
     adc r10, r11                        ; r[3] += t[1] + flag_c
     adc r12, $0                         ; r[4] += flag_c
     add r15, r9                         ; r[2] += t[1] + flag_c
                                                                                                                     
-    mulx r8, r9, [rdx + 16]             ; (t[2], t[3]) <- (a[1] * b[2])
-    mulx rdi, r13, [rdx + 24]           ; (t[6], r[5]) <- (a[1] * b[3])
+    mulx r8, r9, [rcx + 16]             ; (t[2], t[3]) <- (a[1] * b[2])
+    mulx rdi, r13, [rcx + 24]           ; (t[6], r[5]) <- (a[1] * b[3])
     adc r10, r8                         ; r[3] += t[0] + flag_c
     adc r12, rdi                        ; r[4] += t[2] + flag_c
     adc r13, $0                         ; r[5] += flag_c
@@ -97,8 +97,8 @@ Fr_rawMMul_fallback:
                                                                                                                     
     ; a[2] * b                                                                                                  
     mov rdx, [rcx + 16],                ; load a[2] into rdx
-    mulx r8, r9, [rdx + 0],             ; (t[0], t[1]) <- (a[2] * b[0])
-    mulx rdi, r11, [rdx + 8],           ; (t[0], t[1]) <- (a[2] * b[1])
+    mulx r8, r9, [rcx + 0],             ; (t[0], t[1]) <- (a[2] * b[0])
+    mulx rdi, r11, [rcx + 8]            ; (t[0], t[1]) <- (a[2] * b[1])
     add r15, r8                         ; r[2] += t[0] + flag_c
     adc r10, r9                         ; r[3] += t[1] + flag_c
     adc r12, r11                        ; r[4] += t[1] + flag_c
@@ -133,16 +133,16 @@ Fr_rawMMul_fallback:
                                                                                                                     
     ; a[3] * b                                                                                                  
     mov rdx, [rcx + 24]                 ; load a[3] into rdx
-    mulx r8, r9, [rdx + 0]              ; (t[0], t[1]) <- (a[3] * b[0])
-    mulx rdi, r11, [rdx + 8]            ; (t[4], t[5]) <- (a[3] * b[1])
+    mulx r8, r9, [rcx + 0]              ; (t[0], t[1]) <- (a[3] * b[0])
+    mulx rdi, r11, [rcx + 8]            ; (t[4], t[5]) <- (a[3] * b[1])
     add r10, r8                         ; r[3] += t[0] + flag_c
     adc r12, r9                         ; r[4] += t[2] + flag_c
     adc r13, r11                        ; r[5] += t[3] + flag_c
     adc r14, $0                         ; r[6] += flag_c
     add r12, rdi                        ; r[4] += t[1] + flag_c
                                                                                                                     
-    mulx r8, r9, [rdx + 16]             ; (t[2], t[3]) <- (a[3] * b[2])
-    mulx rdi, r15, [rdx + 24]           ; (t[6], r[7]) <- (a[3] * b[3])
+    mulx r8, r9, [rcx + 16]             ; (t[2], t[3]) <- (a[3] * b[2])
+    mulx rdi, r15, [rcx + 24]           ; (t[6], r[7]) <- (a[3] * b[3])
     adc r13, r8                         ; r[5] += t[4] + flag_c
     adc r14, r9                         ; r[6] += t[6] + flag_c
     adc r15, $0                         ; r[7] += + flag_c
@@ -153,11 +153,11 @@ Fr_rawMMul_fallback:
     mov rdx, r10                        ; move np into rdx
     mulx rdx, r8, [ np ]                ; (rdx, _) <- k = r[1] * r_inv
     mulx r8, r9, [q + 0]                ; (t[0], t[1]) <- (modulus.data[0] * k)
-    mulx  rdi, r11, [q + 8],            ; (t[2], t[3]) <- (modulus.data[1] * k)
-    add r10, r8,                        ; r[3] += t[0] (%rsi now free)
-    adc r12,r9,                         ; r[4] += t[2] + flag_c
+    mulx  rdi, r11, [q + 8]             ; (t[2], t[3]) <- (modulus.data[1] * k)
+    add r10, r8                         ; r[3] += t[0] (%rsi now free)
+    adc r12,r9                          ; r[4] += t[2] + flag_c
     adc r13, r11                        ; r[5] += t[3] + flag_c
-    adc  r14, $0,                       ; r[6] += flag_c
+    adc r14, $0                         ; r[6] += flag_c
     adc r15, $0                         ; r[7] += flag_c
     add r12, rdi                        ; r[4] += t[1] + flag_c
                                                                                                                     

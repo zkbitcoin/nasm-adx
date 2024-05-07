@@ -60,7 +60,7 @@ Fr_rawMMul_fallback:
     ; N.B. the value of r[4] now has a max of 63 bits and can accept another 62 bit value before overflowing   
                                                                                                                     
     ; a[1] * b                                                                                                  
-    mov rdx, [rcx + 8],                 ; load a[1] into rdx
+    mov rdx, [rsi + 8],                 ; load a[1] into rdx
     mulx r9, r8, [rcx + 0]              ; (t[0], t[1]) <- (a[1] * b[0])
     mulx r11, rdi, [rcx + 8]            ; (t[4], t[5]) <- (a[1] * b[1])
     add r14, r8                         ; r[1] += t[0] + flag_c
@@ -97,7 +97,7 @@ Fr_rawMMul_fallback:
     adc r13, $0                         ; r[5] += flag_c
                                                                                                                     
     ; a[2] * b                                                                                                  
-    mov rdx, [rcx + 16],                ; load a[2] into rdx
+    mov rdx, [rsi + 16],                ; load a[2] into rdx
     mulx r9, r8, [rcx + 0],             ; (t[0], t[1]) <- (a[2] * b[0])
     mulx r11, rdi, [rcx + 8]            ; (t[0], t[1]) <- (a[2] * b[1])
     add r15, r8                         ; r[2] += t[0] + flag_c
@@ -133,7 +133,7 @@ Fr_rawMMul_fallback:
     adc r14, $0                         ; r[6] += flag_c
                                                                                                                     
     ; a[3] * b                                                                                                  
-    mov rdx, [rcx + 24]                 ; load a[3] into rdx
+    mov rdx, [rsi + 24]                 ; load a[3] into rdx
     mulx r9, r8, [rcx + 0]              ; (t[0], t[1]) <- (a[3] * b[0])
     mulx r11, rdi, [rcx + 8]            ; (t[4], t[5]) <- (a[3] * b[1])
     add r10, r8                         ; r[3] += t[0] + flag_c

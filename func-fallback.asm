@@ -105,8 +105,8 @@ Fr_rawMMul_fallback:
     adc r12, r11                        ; r[4] += t[1] + flag_c
     adc r13, $0                         ; r[5] += flag_c
     add r10, rdi                        ; r[3] += t[0] + flag_c
-    mulx r9, r8, [rsi + 16]             ; (t[0], t[1]) <- (a[2] * b[2])
-    mulx r14, rdi, [rsi + 24]           ; (t[2], r[6]) <- (a[2] * b[3])
+    mulx r9, r8, [rcx + 16]             ; (t[0], t[1]) <- (a[2] * b[2])
+    mulx r14, rdi, [rcx + 24]           ; (t[2], r[6]) <- (a[2] * b[3])
     adc r12, r8                         ; r[4] += t[0] + flag_c
     adc r13, r9                         ; r[5] += t[2] + flag_c
     adc r14, $0                         ; r[6] += flag_c
@@ -116,16 +116,16 @@ Fr_rawMMul_fallback:
     ; reduce by r[2] * k                                                                                        
     mov rdx, r15                        ; move r[2] into rdx
     mulx r8, rdx, [ np ],               ; (rdx, _) <- k = r[1] * np
-    mulx r9, r8, [rsi + 0]              ; (t[0], t[1]) <- (modulus.data[0] * k)
-    mulx r11, rdi, [rsi + 8]            ; (t[0], t[1]) <- (modulus.data[1] * k)
+    mulx r9, r8, [q + 0]                ; (t[0], t[1]) <- (modulus.data[0] * k)
+    mulx r11, rdi, [q + 8]              ; (t[0], t[1]) <- (modulus.data[1] * k)
     add r15, r8                         ; r[2] += t[0] (%r15 now free)
     adc r10, r9                         ; r[3] += t[0] + flag_c
     adc r12, r11                        ; r[4] += t[1] + flag_c
     adc r13, $0                         ; r[5] += flag_c
     adc r14, $0                         ; r[6] += flag_c
     add r10, rdi                        ; r[3] += t[1] + flag_c
-    mulx r9, r8, [rsi + 16]             ; (t[0], t[1]) <- (modulus.data[2] * k)
-    mulx r11, rdi, [rsi + 24]           ; (t[2], t[3]) <- (modulus.data[3] * k)
+    mulx r9, r8, [q + 16]               ; (t[0], t[1]) <- (modulus.data[2] * k)
+    mulx r11, rdi, [q + 24]             ; (t[2], t[3]) <- (modulus.data[3] * k)
     adc r12, r8                         ; r[4] += t[0] + flag_c
     adc r13, r9                         ; r[5] += t[2] + flag_c
     adc r14, r11                        ; r[6] += t[3] + flag_c

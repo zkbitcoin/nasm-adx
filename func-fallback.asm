@@ -202,103 +202,103 @@ Fr_rawMSquare_fallback:
     mov rdx, [rsi + 0]                  ; load a[0] into rdx
 
     xor r8, r8                          ; clear flags
-    ; compute a[0] *a[1], a[0]*a[2], a[0]*a[3], a[1]*a[2], a[1]*a[3], a[2]*a[3]                                  
-    mulx r9, r10, [rsi + 8],            ; (r[1], r[2]) <- a[0] * a[1]
-    mulx r8, r15, [rsi + 16],           ; (t[1], t[2]) <- a[0] * a[2]
-    mulx r11, r12, [rsi + 24],          ; (r[3], r[4]) <- a[0] * a[3]
-                                                                                                                    
-                                                                                                                    
-    ; accumulate products into result registers                                                                  
+    ; compute a[0] *a[1], a[0]*a[2], a[0]*a[3], a[1]*a[2], a[1]*a[3], a[2]*a[3]
+    mulx r10, r9, [rsi + 8],            ; (r[1], r[2]) <- a[0] * a[1]
+    mulx r15, r8, [rsi + 16],           ; (t[1], t[2]) <- a[0] * a[2]
+    mulx r12, r11, [rsi + 24],          ; (r[3], r[4]) <- a[0] * a[3]
+
+
+    ; accumulate products into result registers
     add r10, r8                         ; r[2] += t[1]
     adc r11, r15,                       ; r[3] += t[2]
     mov rdx, [rsi + 8]                  ; load a[1] into rdx
-    mulx r8, r15, [rsi + 16],           ; (t[5], t[6]) <- a[1] * a[2]
-    mulx rdi, rcx, [rsi + 24]           ; (t[3], t[4]) <- a[1] * a[3]
+    mulx r15, r8, [rsi + 16],           ; (t[5], t[6]) <- a[1] * a[2]
+    mulx rcx, rdi, [rsi + 24]           ; (t[3], t[4]) <- a[1] * a[3]
     mov rdx, [rsi + 24]                 ; load a[3] into rdx
-    mulx r13, r14, [rsi + 16]           ; (r[5], r[6]) <- a[3] * a[2]
-    adc  r12, rdi                       ; r[4] += t[3]
+    mulx r14, r13, [rsi + 16]           ; (r[5], r[6]) <- a[3] * a[2]
+    adc r12, rdi                        ; r[4] += t[3]
     adc r13, rcx                        ; r[5] += t[4] + flag_c
     adc r14, $0                         ; r[6] += flag_c
     add r11, r8,                        ; r[3] += t[5]
     adc r12, r15                        ; r[4] += t[6]
     adc r13, $0                         ; r[5] += flag_c
-                                                                                                                    
-    ; double result registers                                                                                    
+
+    ; double result registers
     add r9, r9                          ; r[1] = 2r[1]
     adc r10, r10                        ; r[2] = 2r[2]
     adc r11, r11                        ; r[3] = 2r[3]
     adc r12, r12                        ; r[4] = 2r[4]
     adc r13, r13                        ; r[5] = 2r[5]
     adc r14, r14                        ; r[6] = 2r[6]
-                                                                                                                    
-    ; compute a[3]*a[3], a[2]*a[2], a[1]*a[1], a[0]*a[0]                                                         
+
+    ; compute a[3]*a[3], a[2]*a[2], a[1]*a[1], a[0]*a[0]
     mov rdx, [rsi + 0]                  ; load a[0] into %rdx
-    mulx r8, rcx, rdx                   ; (r[0], t[4]) <- a[0] * a[0]
+    mulx rcx, r8, rdx                   ; (r[0], t[4]) <- a[0] * a[0]
     mov rdx, [rsi + 16]                 ; load a[2] into %rdx
-    mulx rdx, rdi, rdx                  ; (t[7], t[8]) <- a[2] * a[2]
+    mulx rdi, rdx, rdx                  ; (t[7], t[8]) <- a[2] * a[2]
     ; add squares into result registers
     add r12, rdx                        ; r[4] += t[7]
     adc r13, rdi                        ; r[5] += t[8]
     adc r14, $0                         ; r[6] += flag_c
     add r9, rcx                         ; r[1] += t[4]
     mov rdx, [rsi + 24]                 ; r[2] += flag_c
-    mulx rcx, r15, rdx                  ; (t[5], r[7]) <- a[3] * a[3]
+    mulx r15, rcx, rdx                  ; (t[5], r[7]) <- a[3] * a[3]
     mov rdx, [rsi + 8]                  ; load a[1] into np
-    mulx rdi, rdx, rdx                  ; (t[3], t[6]) <- a[1] * a[1]
+    mulx rdx, rdi, rdx                  ; (t[3], t[6]) <- a[1] * a[1]
     adc r10, rdi                        ; r[2] += t[3]
     adc r11, rdx                        ; r[3] += t[6]
     adc r12, $0                         ; r[4] += flag_c
     add r14, rcx                        ; r[6] += t[5]
     adc r15, $0                         ; r[7] += flag_c
-                                                                                                                    
-    ; perform modular reduction: r[0]                                                                            
+
+    ; perform modular reduction: r[0]
     mov rdx, r8                         ; move r8 into rdx
-    mulx rdx, rdi, [ np ]               ; (rdx, _) <- k = r[9] * np
-    mulx rdi, rcx, [q + 0]              ; (t[0], t[1]) <- (modulus[0] * k)
+    mulx rdi, rdx, [ np ]               ; (rdx, _) <- k = r[9] * np
+    mulx rcx, rdi, [q + 0]              ; (t[0], t[1]) <- (modulus[0] * k)
     add r8, rdi                         ; r[0] += t[0] (%r8 now free)
     adc r9, rcx                         ; r[1] += t[1] + flag_c
-    mulx rdi, rcx, [q + 8]              ; (t[2], t[3]) <- (modulus[1] * k)
+    mulx rcx, rdi, [q + 8]              ; (t[2], t[3]) <- (modulus[1] * k)
     adc r10, rcx                        ; r[2] += t[3] + flag_c
     adc r11, $0                         ; r[4] += flag_c
     ; Partial fix        adc $0, r12                            ; r[4] += flag_c
     add r9, rdi                         ; r[1] += t[2]
-    mulx rdi, rcx, [q + 16]             ; (t[0], t[1]) <- (modulus[3] * k)
-    mulx r8, rdx, [q + 24]              ; (t[2], t[3]) <- (modulus[2] * k)
+    mulx rcx, rdi, [q + 16]             ; (t[0], t[1]) <- (modulus[3] * k)
+    mulx rdx, r8, [q + 24]              ; (t[2], t[3]) <- (modulus[2] * k)
     adc r10, rdi                        ; r[2] += t[0] + flag_c
     adc r11, rcx                        ; r[3] += t[1] + flag_c
     adc r12, rdx                        ; r[4] += t[3] + flag_c
     adc r13, $0                         ; r[5] += flag_c
     add r11, r8                         ; r[3] += t[2] + flag_c
     adc r12, $0                         ; r[4] += flag_c
-                                                                                                                    
-    ; perform modular reduction: r[1]                                                                            
+
+    ; perform modular reduction: r[1]
     mov rdx, r9                         ; move r9 into %rdx
-    mulx rdx, rdi, [ np ]               ; (rdx, _) <- k = r[9] * np
-    mulx rdi, rcx, [q + 0]              ; (t[0], t[1]) <- (modulus[0] * k)
+    mulx rdi, rdx, [ np ]               ; (rdx, _) <- k = r[9] * np
+    mulx rcx, rdi, [q + 0]              ; (t[0], t[1]) <- (modulus[0] * k)
     add  r9, rdi                        ; r[1] += t[0] (%r8 now free)
     adc r10, rcx                        ; r[2] += t[1] + flag_c
-    mulx rdi, rcx, [q + 8]              ; (t[2], t[3]) <- (modulus[1] * k)
+    mulx rcx,rdi,  [q + 8]              ; (t[2], t[3]) <- (modulus[1] * k)
     adc r11, rcx                        ; r[3] += t[3] + flag_c
     adc r12, $0                         ; r[4] += flag_c
     add r10, rdi                        ; r[2] += t[2]
-    mulx rdi, rcx, [q + 16]             ; (t[0], t[1]) <- (modulus[3] * k)
-    mulx r8, r9, [q + 24]               ; (t[2], t[3]) <- (modulus[2] * k)
+    mulx rcx, rdi, [q + 16]             ; (t[0], t[1]) <- (modulus[3] * k)
+    mulx r9, r8, [q + 24]               ; (t[2], t[3]) <- (modulus[2] * k)
     adc r11, rdi                        ; r[3] += t[0] + flag_c
     adc r12, rcx                        ; r[4] += t[1] + flag_c
     adc  r13, r9                        ; r[5] += t[3] + flag_c
     adc r14, $0                         ; r[6] += flag_c
     add r12, r8                         ; r[4] += t[2] + flag_c
     adc r13, $0                         ; r[5] += flag_c
-                                                                                                                    
-    ; perform modular reduction: r[2]                                                                            
+
+    ; perform modular reduction: r[2]
     mov rdx, r10                        ; move r10 into rdx
-    mulx rdx, rdi, [ np ]               ; (rdx, _) <- k = r[10] * np
-    mulx  rdi, rcx, [q + 0]             ; (t[0], t[1]) <- (modulus[0] * k)
+    mulx rdi, rdx, [ np ]               ; (rdx, _) <- k = r[10] * np
+    mulx rcx, rdi, [q + 0]              ; (t[0], t[1]) <- (modulus[0] * k)
     add r10, rdi                        ; r[2] += t[0] (%r8 now free)
     adc  r11, rcx                       ; r[3] += t[1] + flag_c
-    mulx rdi, rcx, [q + 8]              ; (t[2], t[3]) <- (modulus[1] * k)
+    mulx rcx, rdi, [q + 8]              ; (t[2], t[3]) <- (modulus[1] * k)
     mulx r8, r9, [q + 16]               ; (t[0], t[1]) <- (modulus[3] * k)
-    mulx r10, rdx, [q + 24]             ; (t[2], t[3]) <- (modulus[2] * k)
+    mulx rdx, r10, [q + 24]             ; (t[2], t[3]) <- (modulus[2] * k)
     adc r12, rcx                        ; r[4] += t[3] + flag_c
     adc r13, r9                         ; r[5] += t[1] + flag_c
     adc r14, rdx                        ; r[6] += t[3] + flag_c
@@ -307,17 +307,17 @@ Fr_rawMSquare_fallback:
     adc r12, r8                         ; r[4] += t[0] + flag_c
     adc r13, r10                        ; r[5] += t[2] + flag_c
     adc r14, $0                         ; r[6] += flag_c
-                                                                                                                    
-    ; perform modular reduction: r[3]                                                                            
+
+    ; perform modular reduction: r[3]
     mov  rdx, r11                       ; move r11 into %rdx
-    mulx rdx, rdi, [ np]                ; (rdx, _) <- k = r[10] * np
-    mulx rdi, rcx, [q + 0]              ; (t[0], t[1]) <- (modulus[0] * k)
-    mulx r8, r9, [q + 8]                ; (t[2], t[3]) <- (modulus[1] * k)
+    mulx rdi, rdx, [ np]                ; (rdx, _) <- k = r[10] * np
+    mulx rcx, rdi, [q + 0]              ; (t[0], t[1]) <- (modulus[0] * k)
+    mulx r9, r8, [q + 8]                ; (t[2], t[3]) <- (modulus[1] * k)
     add r11, rdi                        ; r[3] += t[0] (%r11 now free)
     adc r12, r8                         ; r[4] += t[2]
     adc r13, r9                         ; r[5] += t[3] + flag_c
-    mulx r8, r9, [q + 16]               ; (t[0], t[1]) <- (modulus[3] * k)
-    mulx r10, r11, [q + 24]             ; (t[2], t[3]) <- (modulus[2] * k)
+    mulx r9, r8, [q + 16]               ; (t[0], t[1]) <- (modulus[3] * k)
+    mulx r11, r10, [q + 24]             ; (t[2], t[3]) <- (modulus[2] * k)
     adc r14, r9                         ; r[6] += t[1] + flag_c
     adc r15, r11                        ; r[7] += t[3] + flag_c
     add r12, rcx                        ; r[4] += t[1] + flag_c

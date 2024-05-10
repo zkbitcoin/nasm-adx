@@ -29,12 +29,12 @@ int main(int argc, char* argv[]) {
 
 
 
-    printf("ffiasm \n");
+    printf("Fr_rawMSquare_fallback \n");
 
     uint64_t limbs_r[4] = {0,0,0,0};
     uint64_t limbs_a[4] = {9,9,9,9};
 
-    Fr_rawMSquare(limbs_r,  limbs_a);
+    Fr_rawMSquare_fallback(limbs_r,  limbs_a);
 
     for (size_t i = 0; i < 4; ++i)
       printf("limbs_r[%zu] is %" PRIu64 "\t", i, limbs_r[i]);
@@ -75,7 +75,6 @@ int main(int argc, char* argv[]) {
 
     for (size_t i = 0; i < 4; ++i)
       printf("limbs_r[%zu] is %" PRIu64 "\t", i, limbs_r[i]);
-
 
     /*
     printf("Fr_rawToMontgomery \n");

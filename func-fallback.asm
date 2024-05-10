@@ -1,4 +1,6 @@
 global Fr_rawMMul_fallback
+global Fr_rawToMontgomery_fallback
+global Fr_rawFromMontgomery_fallback
 DEFAULT REL
 
 section .text
@@ -32,7 +34,7 @@ Fr_rawMMul_fallback:
                                                                                                                     
     ; start first addition chain                                                                                
     add r14, r8                         ; r[1] += t[0]
-    adc r15 , r9                        ; r[2] += t[1] + flag_c
+    adc r15, r9                         ; r[2] += t[1] + flag_c
     adc r10, rdi                        ; r[3] += t[2] + flag_c
     adc r12, $0                         ; r[4] += flag_c
 
@@ -184,6 +186,165 @@ Fr_rawMMul_fallback:
 
     ret
 
+;;;;;;;;;;;;;;;;;;;;;;
+; rawToMontgomery
+;;;;;;;;;;;;;;;;;;;;;;
+; Convert a number to Montgomery
+;   rdi <= Pointer destination element
+;   rsi <= Pointer to src element
+;;;;;;;;;;;;;;;;;;;;
+Fr_rawToMontgomery_fallback:
+    push    rdx
+    lea     rdx, [R2]
+    call    Fr_rawMMul_fallback
+    pop     rdx
+    ret
+
+Fr_rawFromMontgomery_fallback:
+    push r15
+    push r14
+    push r13
+    push r12
+    push rdi
+
+    mov rcx, rdx                        ; load b into rcx
+
+    ; start computing modular reduction
+
+    ; start first chain
+    mov r13, [rsi + 0]                  ; move a[0] into r13
+    mov r14, 0
+    mov r10, 0
+    mov r15, 0
+    mov r12, 0
+
+    mov rdx, [rsi + 0]                  ; move a[0] into rdx
+    mulx r11, rdx, [ np ]               ; (rdx, _) <- k = a[1] * np
+
+    adc r12, $0                         ; r[4] += flag_c
+
+    ; reduce by r[0] * k
+    mulx r9, r8, [q + 0]                ; (t[0], t[1]) <- (modulus.data[0] * k)
+    mulx r11, rdi, [q + 8]              ; (t[0], t[1]) <- (modulus.data[1] * k)
+    add r13, r8                         ; r[0] += t[0] (r13 now free)
+    adc r14, rdi                        ; r[1] += t[0]
+    adc r15, r11                        ; r[2] += t[1] + flag_c
+    mov r10, $0                         ; r[3] += flag_c
+    mov r12, $0                         ; r[4] += flag_c
+    add r14, r9                         ; r[1] += t[1] + flag_c
+    mulx r9, r8, [q + 16]               ; (t[0], t[1]) <- (modulus.data[2] * k)
+    mulx r11, rdi, [q + 24]             ; (t[2], t[3]) <- (modulus.data[3] * k)
+    adc r15, r8                         ; r[2] += t[0] + flag_c
+    adc r10, rdi                        ; r[3] += t[2] + flag_c
+    adc r12, r11                        ; r[4] += t[3] + flag_c
+    add r10, r9                         ; r[3] += t[1] + flag_c
+    adc r12, $0                         ; r[4] += flag_i
+
+    ; start second chain
+    mov r8, [rsi + 8]
+    mov r9, 0
+    mov r11, 0
+    mov rdi, 0
+
+    add r14, r8                         ; r[1] += t[0] + flag_c
+    adc r15, rdi                        ; r[2] += t[0] + flag_c
+
+    ; reduce by r[1] * k
+    mov rdx, r14                        ; move r[1] into rdx
+    mulx r8, rdx, [ np ]                ; (rd, _) <- k = r[1] * r_inv
+    mulx r9, r8, [q + 0]                ; (t[0], t[1]) <- (modulus.data[0] * k)
+    mulx r11, rdi, [q + 8]              ; (t[0], t[1]) <- (modulus.data[1] * k)
+    add r14, r8                         ; r[1] += t[0] (r14 now free)
+    adc r15, rdi                        ; r[2] += t[0] + flag_c
+    adc r10, r11                        ; r[3] += t[1] + flag_c
+    adc r12, $0                         ; r[4] += flag_c
+    adc r13, $0                         ; r[5] += flag_c
+    add r15, r9                         ; r[2] += t[1] + flag_c
+    mulx r9, r8, [q + 16]               ; (t[0], t[1]) <- (modulus.data[2] * k)
+    mulx r11, rdi, [q + 24]             ; (t[2], t[3]) <- (modulus.data[3] * k)
+    adc r10, r8                         ; r[3] += t[0] + flag_c
+    adc r12, r9                         ; r[4] += t[2] + flag_c
+    adc r13, r11                        ; r[5] += t[3] + flag_c
+    add r12, rdi                        ; r[4] += t[1] + flag_c
+    adc r13, $0                         ; r[5] += flag_c
+
+    ; start third chain
+    mov r8, [rsi + 16]
+    mov r9, 0
+
+    mov r11, 0
+    mov rdi, 0
+
+    add r15, r8                         ; r[2] += t[0] + flag_c
+    adc r10, r9                         ; r[3] += t[1] + flag_c
+
+    ; reduce by r[2] * k
+    mov rdx, r15                        ; move r[2] into rdx
+    mulx r8, rdx, [ np ],               ; (rdx, _) <- k = r[1] * np
+    mulx r9, r8, [q + 0]                ; (t[0], t[1]) <- (modulus.data[0] * k)
+    mulx r11, rdi, [q + 8]              ; (t[0], t[1]) <- (modulus.data[1] * k)
+    add r15, r8                         ; r[2] += t[0] (%r15 now free)
+    adc r10, r9                         ; r[3] += t[0] + flag_c
+    adc r12, r11                        ; r[4] += t[1] + flag_c
+    adc r13, $0                         ; r[5] += flag_c
+    adc r14, $0                         ; r[6] += flag_c
+    add r10, rdi                        ; r[3] += t[1] + flag_c
+    mulx r9, r8, [q + 16]               ; (t[0], t[1]) <- (modulus.data[2] * k)
+    mulx r11, rdi, [q + 24]             ; (t[2], t[3]) <- (modulus.data[3] * k)
+    adc r12, r8                         ; r[4] += t[0] + flag_c
+    adc r13, r9                         ; r[5] += t[2] + flag_c
+    adc r14, r11                        ; r[6] += t[3] + flag_c
+    add r13, rdi                        ; r[5] += t[1] + flag_c
+    adc r14, $0                         ; r[6] += flag_c
+
+    ; start fourth chain
+    mov r8, [rsi + 24]
+    mov r9, 0
+
+    mov r11, 0
+    mov rdi, 0
+
+    add r10, r8                         ; r[3] += t[0] + flag_c
+
+    ; reduce by r[3] * k
+    mov rdx, r10                        ; move np into rdx
+    mulx r8, rdx, [ np ]                ; (rdx, _) <- k = r[1] * np
+    mulx r9, r8, [q + 0]                ; (t[0], t[1]) <- (modulus.data[0] * k)
+    mulx r11, rdi, [q + 8]              ; (t[2], t[3]) <- (modulus.data[1] * k)
+    add r10, r8                         ; r[3] += t[0] (rsi now free)
+    adc r12,r9                          ; r[4] += t[2] + flag_c
+    adc r13, r11                        ; r[5] += t[3] + flag_c
+    adc r14, $0                         ; r[6] += flag_c
+    adc r15, $0                         ; r[7] += flag_c
+    add r12, rdi                        ; r[4] += t[1] + flag_c
+    mulx r9, r8, [q + 16]               ; (t[4], t[5]) <- (modulus.data[2] * k)
+    mulx rdx, rdi, [q + 24]             ; (t[6], t[7]) <- (modulus.data[3] * k)
+    adc r13, r8                         ; r[5] += t[4] + flag_c
+    adc r14, r9                         ; r[6] += t[6] + flag_c
+    adc r15, rdx                        ; r[7] += t[7] + flag_c
+    add r14, rdi                        ; r[6] += t[5] + flag_c
+    adc r15, $0,                        ; r[7] += flag_c
+
+    pop rdi
+
+    mov [rdi + 0], r12
+    mov [rdi + 8], r13
+    mov [rdi + 16],r14
+    mov [rdi + 24], r15
+
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+
+    ret
+
 section .data
+z       dq      0, 0, 0, 0
+o       dq      1, 0, 0, 0
+
 q       dq      0x43e1f593f0000001,0x2833e84879b97091,0xb85045b68181585d,0x30644e72e131a029
 np      dq      0xc2e1f593efffffff
+R2      dq      0x1bb8e645ae216da7,0x53fe3ab1e35c59e3,0x8c49833d53bb8085,0x0216d0b17f4e44a5
+
+

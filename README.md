@@ -13,3 +13,7 @@ https://www.cs.virginia.edu/~evans/cs216/guides/x86.html
 x64 Cheat Sheet
 
 https://cs.brown.edu/courses/cs033/docs/guides/x64_cheatsheet.pdf
+
+Software optimization resources
+
+https://www.agner.org/optimize/

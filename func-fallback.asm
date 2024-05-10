@@ -366,10 +366,10 @@ Fr_rawFromMontgomery_fallback:
 
     ; start first chain
     mov r13, [rsi + 0]                  ; move a[0] into r13
-    mov r14, 0
-    mov r10, 0
-    mov r15, 0
-    mov r12, 0
+    xor r14, r14
+    xor r10, r10
+    xor r15, r15
+    xor r12, r12
 
     mov rdx, [rsi + 0]                  ; move a[0] into rdx
     mulx r11, rdx, [ np ]               ; (rdx, _) <- k = a[1] * np
@@ -395,9 +395,9 @@ Fr_rawFromMontgomery_fallback:
 
     ; start second chain
     mov r8, [rsi + 8]
-    mov r9, 0
-    mov r11, 0
-    mov rdi, 0
+    xor r9, r9
+    xor r11, r11
+    xor rdi, rdi
 
     add r14, r8                         ; r[1] += t[0] + flag_c
     adc r15, rdi                        ; r[2] += t[0] + flag_c
@@ -423,10 +423,10 @@ Fr_rawFromMontgomery_fallback:
 
     ; start third chain
     mov r8, [rsi + 16]
-    mov r9, 0
+    xor r9, r9
 
-    mov r11, 0
-    mov rdi, 0
+    xor r11, r11
+    xor rdi, rdi
 
     add r15, r8                         ; r[2] += t[0] + flag_c
     adc r10, r9                         ; r[3] += t[1] + flag_c
@@ -452,10 +452,10 @@ Fr_rawFromMontgomery_fallback:
 
     ; start fourth chain
     mov r8, [rsi + 24]
-    mov r9, 0
+    xor r9, r9
 
-    mov r11, 0
-    mov rdi, 0
+    xor r11, r11
+    xor rdi, rdi
 
     add r10, r8                         ; r[3] += t[0] + flag_c
 
@@ -493,9 +493,6 @@ Fr_rawFromMontgomery_fallback:
     ret
 
 section .data
-z       dq      0, 0, 0, 0
-o       dq      1, 0, 0, 0
-
 q       dq      0x43e1f593f0000001,0x2833e84879b97091,0xb85045b68181585d,0x30644e72e131a029
 np      dq      0xc2e1f593efffffff
 R2      dq      0x1bb8e645ae216da7,0x53fe3ab1e35c59e3,0x8c49833d53bb8085,0x0216d0b17f4e44a5

@@ -297,7 +297,7 @@ Fr_rawMSquare_fallback:
     add r10, rdi                        ; r[2] += t[0] (%r8 now free)
     adc  r11, rcx                       ; r[3] += t[1] + flag_c
     mulx rcx, rdi, [q + 8]              ; (t[2], t[3]) <- (modulus[1] * k)
-    mulx r8, r9, [q + 16]               ; (t[0], t[1]) <- (modulus[3] * k)
+    mulx r9, r8, [q + 16]               ; (t[0], t[1]) <- (modulus[3] * k)
     mulx rdx, r10, [q + 24]             ; (t[2], t[3]) <- (modulus[2] * k)
     adc r12, rcx                        ; r[4] += t[3] + flag_c
     adc r13, r9                         ; r[5] += t[1] + flag_c
@@ -336,6 +336,8 @@ Fr_rawMSquare_fallback:
     pop r13
     pop r14
     pop r15
+
+    ret
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ; rawToMontgomery

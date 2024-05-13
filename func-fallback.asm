@@ -8,448 +8,469 @@ global tachyon_math_bn254_fr_rawFromMontgomery_no_adx
         section .text
 
 
-    tachyon_math_bn254_fr_rawMMul_no_adx:
-        push r15
-        push r14
-        push r13
-        push r12
-        push rdi
-        mov rcx,rdx
+tachyon_math_bn254_fr_rawMMul_no_adx:
+    push r15
+    push r14
+    push r13
+    push r12
+    push rdi
+    mov rcx,rdx
 
-        mov rdx,[rsi + 0]
-        xor r8,r8
+    mov rdx,[rsi + 0]
+    xor r8,r8
 
-    ; front-load mul ops, can parallelize 4 of these but latency is 4 cycles
+; front-load mul ops, can parallelize 4 of these but latency is 4 cycles
 
-        mulx r9,r8,[rcx + 8]
-        mulx r12,rdi,[rcx + 24]
-        mulx r14,r13,[rcx + 0]
-        mulx r10,r15,[rcx + 16]
+    mulx r9,r8,[rcx + 8]
+    mulx r12,rdi,[rcx + 24]
+    mulx r14,r13,[rcx + 0]
+    mulx r10,r15,[rcx + 16]
 
-    ; start computing modular reduction
+; start computing modular reduction
 
-        mov rdx,r13
-        mulx r11,rdx,[ np ]
+    mov rdx,r13
+    mulx r11,rdx,[ np ]
 
-    ; start first addition chain
+; start first addition chain
 
-        add r14,r8
-        adc r15,r9
-        adc r10,rdi
-        adc r12,$0
+    add r14,r8
+    adc r15,r9
+    adc r10,rdi
+    adc r12,$0
 
-    ; reduce by r[0] * k
+; reduce by r[0] * k
 
-        mulx r9,r8,[q + 0]
-        mulx r11,rdi,[q + 8]
-        add r13,r8
-        adc r14,rdi
-        adc r15,r11
-        adc r10,$0
-        adc r12,$0
-        add r14,r9
-        mulx r9,r8,[q + 16]
-        mulx r11,rdi,[q + 24]
-        adc r15,r8
-        adc r10,rdi
-        adc r12,r11
-        add r10,r9
-        adc r12,$0
+    mulx r9,r8,[q + 0]
+    mulx r11,rdi,[q + 8]
+    add r13,r8
+    adc r14,rdi
+    adc r15,r11
+    adc r10,$0
+    adc r12,$0
+    add r14,r9
+    mulx r9,r8,[q + 16]
+    mulx r11,rdi,[q + 24]
+    adc r15,r8
+    adc r10,rdi
+    adc r12,r11
+    add r10,r9
+    adc r12,$0
 
-    ; a[1] * b
+; a[1] * b
 
-        mov rdx,[rsi + 8]
-        mulx r9,r8,[rcx + 0]
-        mulx r11,rdi,[rcx + 8]
-        add r14,r8
-        adc r15,rdi
-        adc r10,r11
-        adc r12,$0
-        add r15,r9
+    mov rdx,[rsi + 8]
+    mulx r9,r8,[rcx + 0]
+    mulx r11,rdi,[rcx + 8]
+    add r14,r8
+    adc r15,rdi
+    adc r10,r11
+    adc r12,$0
+    add r15,r9
 
-        mulx r9,r8,[rcx + 16]
-        mulx r13,rdi,[rcx + 24]
-        adc r10,r8
-        adc r12,rdi
-        adc r13,$0
-        add r12,r9
-        adc r13,$0
+    mulx r9,r8,[rcx + 16]
+    mulx r13,rdi,[rcx + 24]
+    adc r10,r8
+    adc r12,rdi
+    adc r13,$0
+    add r12,r9
+    adc r13,$0
 
-    ; reduce by r[1] * k
+; reduce by r[1] * k
 
-        mov rdx,r14
-        mulx r8,rdx,[ np ]
-        mulx r9,r8,[q + 0]
-        mulx r11,rdi,[q + 8]
-        add r14,r8
-        adc r15,rdi
-        adc r10,r11
-        adc r12,$0
-        adc r13,$0
-        add r15,r9
-        mulx r9,r8,[q + 16]
-        mulx r11,rdi,[q + 24]
-        adc r10,r8
-        adc r12,r9
-        adc r13,r11
-        add r12,rdi
-        adc r13,$0
+    mov rdx,r14
+    mulx r8,rdx,[ np ]
+    mulx r9,r8,[q + 0]
+    mulx r11,rdi,[q + 8]
+    add r14,r8
+    adc r15,rdi
+    adc r10,r11
+    adc r12,$0
+    adc r13,$0
+    add r15,r9
+    mulx r9,r8,[q + 16]
+    mulx r11,rdi,[q + 24]
+    adc r10,r8
+    adc r12,r9
+    adc r13,r11
+    add r12,rdi
+    adc r13,$0
 
-    ; a[2] * b
+; a[2] * b
 
-        mov rdx,[rsi + 16]
-        mulx r9,r8,[rcx + 0]
-        mulx r11,rdi,[rcx + 8]
-        add r15,r8
-        adc r10,r9
-        adc r12,r11
-        adc r13,$0
-        add r10,rdi
-        mulx r9,r8,[rcx + 16]
-        mulx r14,rdi,[rcx + 24]
-        adc r12,r8
-        adc r13,r9
-        adc r14,$0
-        add r13,rdi
-        adc r14,$0
+    mov rdx,[rsi + 16]
+    mulx r9,r8,[rcx + 0]
+    mulx r11,rdi,[rcx + 8]
+    add r15,r8
+    adc r10,r9
+    adc r12,r11
+    adc r13,$0
+    add r10,rdi
+    mulx r9,r8,[rcx + 16]
+    mulx r14,rdi,[rcx + 24]
+    adc r12,r8
+    adc r13,r9
+    adc r14,$0
+    add r13,rdi
+    adc r14,$0
 
-    ; reduce by r[2] * k
+; reduce by r[2] * k
 
-        mov rdx,r15
-        mulx r8,rdx,[ np ]
-        mulx r9,r8,[q + 0]
-        mulx r11,rdi,[q + 8]
-        add r15,r8
-        adc r10,r9
-        adc r12,r11
-        adc r13,$0
-        adc r14,$0
-        add r10,rdi
-        mulx r9,r8,[q + 16]
-        mulx r11,rdi,[q + 24]
-        adc r12,r8
-        adc r13,r9
-        adc r14,r11
-        add r13,rdi
-        adc r14,$0
+    mov rdx,r15
+    mulx r8,rdx,[ np ]
+    mulx r9,r8,[q + 0]
+    mulx r11,rdi,[q + 8]
+    add r15,r8
+    adc r10,r9
+    adc r12,r11
+    adc r13,$0
+    adc r14,$0
+    add r10,rdi
+    mulx r9,r8,[q + 16]
+    mulx r11,rdi,[q + 24]
+    adc r12,r8
+    adc r13,r9
+    adc r14,r11
+    add r13,rdi
+    adc r14,$0
 
-    ; a[3] * b
+; a[3] * b
 
-        mov rdx,[rsi + 24]
-        mulx r9,r8,[rcx + 0]
-        mulx r11,rdi,[rcx + 8]
-        add r10,r8
-        adc r12,r9
-        adc r13,r11
-        adc r14,$0
-        add r12,rdi
+    mov rdx,[rsi + 24]
+    mulx r9,r8,[rcx + 0]
+    mulx r11,rdi,[rcx + 8]
+    add r10,r8
+    adc r12,r9
+    adc r13,r11
+    adc r14,$0
+    add r12,rdi
 
-        mulx r9,r8,[rcx + 16]
-        mulx r15,rdi,[rcx + 24]
-        adc r13,r8
-        adc r14,r9
-        adc r15,$0
-        add r14,rdi
-        adc r15,$0
+    mulx r9,r8,[rcx + 16]
+    mulx r15,rdi,[rcx + 24]
+    adc r13,r8
+    adc r14,r9
+    adc r15,$0
+    add r14,rdi
+    adc r15,$0
 
-    ; reduce by r[3] * k
+; reduce by r[3] * k
 
-        mov rdx,r10
-        mulx r8,rdx,[ np ]
-        mulx r9,r8,[q + 0]
-        mulx r11,rdi,[q + 8]
-        add r10,r8
-        adc r12,r9
-        adc r13,r11
-        adc r14,$0
-        adc r15,$0
-        add r12,rdi
+    mov rdx,r10
+    mulx r8,rdx,[ np ]
+    mulx r9,r8,[q + 0]
+    mulx r11,rdi,[q + 8]
+    add r10,r8
+    adc r12,r9
+    adc r13,r11
+    adc r14,$0
+    adc r15,$0
+    add r12,rdi
 
-        mulx r9,r8,[q + 16]
-        mulx rdx,rdi,[q + 24]
-        adc r13,r8
-        adc r14,r9
-        adc r15,rdx
-        add r14,rdi
-        adc r15,$0
+    mulx r9,r8,[q + 16]
+    mulx rdx,rdi,[q + 24]
+    adc r13,r8
+    adc r14,r9
+    adc r15,rdx
+    add r14,rdi
+    adc r15,$0
 
-        pop rdi
+    ;comparison
+    cmp r15,[q + 24]
+    jc tachyon_math_bn254_fr_rawMMul_no_adx_done
+    jnz tachyon_math_bn254_fr_rawMMul_no_adx_sq
+    cmp r14,[q + 16]
+    jc tachyon_math_bn254_fr_rawMMul_no_adx_done
+    jnz tachyon_math_bn254_fr_rawMMul_no_adx_sq
+    cmp r13,[q + 8]
+    jc tachyon_math_bn254_fr_rawMMul_no_adx_done
+    jnz tachyon_math_bn254_fr_rawMMul_no_adx_sq
+    cmp r12,[q + 0]
+    jc tachyon_math_bn254_fr_rawMMul_no_adx_done
+    jnz tachyon_math_bn254_fr_rawMMul_no_adx_sq
+    tachyon_math_bn254_fr_rawMMul_no_adx_sq:
+    sub r12,[q +0]
+    sbb r13,[q +8]
+    sbb r14,[q +16]
+    sbb r15,[q +24]
+    tachyon_math_bn254_fr_rawMMul_no_adx_done:
 
-        mov [rdi + 0],r12
-        mov [rdi + 8],r13
-        mov [rdi + 16],r14
-        mov [rdi + 24],r15
+    pop rdi
 
-        pop r12
-        pop r13
-        pop r14
-        pop r15
-        ret
-    tachyon_math_bn254_fr_rawFromMontgomery_no_adx:
-        push r15
-        push r14
-        push r13
-        push r12
-        push rdi
-        mov rcx,rdx
+    mov [rdi + 0],r12
+    mov [rdi + 8],r13
+    mov [rdi + 16],r14
+    mov [rdi + 24],r15
 
-    ; start computing modular reduction
-    ; start first chain
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+    ret
+tachyon_math_bn254_fr_rawFromMontgomery_no_adx:
+    push r15
+    push r14
+    push r13
+    push r12
+    push rdi
+    mov rcx,rdx
 
-        mov r13,[rsi + 0]
-        xor r14,r14
-        xor r10,r10
-        xor r15,r15
-        xor r12,r12
-        mov rdx,[rsi + 0]
-        mulx r11,rdx,[ np ]
-        adc r12,$0
+; start computing modular reduction
+; start first chain
 
-    ; reduce by r[0] * k
+    mov r13,[rsi + 0]
+    xor r14,r14
+    xor r10,r10
+    xor r15,r15
+    xor r12,r12
+    mov rdx,[rsi + 0]
+    mulx r11,rdx,[ np ]
+    adc r12,$0
 
-        mulx r9,r8,[q + 0]
-        mulx r11,rdi,[q + 8]
-        add r13,r8
-        adc r14,rdi
-        adc r15,r11
-        mov r10,$0
-        mov r12,$0
-        add r14,r9
-        mulx r9,r8,[q + 16]
-        mulx r11,rdi,[q + 24]
-        adc r15,r8
-        adc r10,rdi
-        adc r12,r11
-        add r10,r9
-        adc r12,$0
+; reduce by r[0] * k
 
-    ; start second chain
+    mulx r9,r8,[q + 0]
+    mulx r11,rdi,[q + 8]
+    add r13,r8
+    adc r14,rdi
+    adc r15,r11
+    mov r10,$0
+    mov r12,$0
+    add r14,r9
+    mulx r9,r8,[q + 16]
+    mulx r11,rdi,[q + 24]
+    adc r15,r8
+    adc r10,rdi
+    adc r12,r11
+    add r10,r9
+    adc r12,$0
 
-        mov r8,[rsi + 8]
-        xor r9,r9
-        xor r11,r11
-        xor rdi,rdi
+; start second chain
 
-        add r14,r8
-        adc r15,rdi
+    mov r8,[rsi + 8]
+    xor r9,r9
+    xor r11,r11
+    xor rdi,rdi
 
-    ; reduce by r[1] * k
+    add r14,r8
+    adc r15,rdi
 
-        mov rdx,r14
-        mulx r8,rdx,[ np ]
-        mulx r9,r8,[q + 0]
-        mulx r11,rdi,[q + 8]
-        add r14,r8
-        adc r15,rdi
-        adc r10,r11
-        adc r12,$0
-        adc r13,$0
-        add r15,r9
-        mulx r9,r8,[q + 16]
-        mulx r11,rdi,[q + 24]
-        adc r10,r8
-        adc r12,r9
-        adc r13,r11
-        add r12,rdi
-        adc r13,$0
+; reduce by r[1] * k
 
-    ; start third chain
+    mov rdx,r14
+    mulx r8,rdx,[ np ]
+    mulx r9,r8,[q + 0]
+    mulx r11,rdi,[q + 8]
+    add r14,r8
+    adc r15,rdi
+    adc r10,r11
+    adc r12,$0
+    adc r13,$0
+    add r15,r9
+    mulx r9,r8,[q + 16]
+    mulx r11,rdi,[q + 24]
+    adc r10,r8
+    adc r12,r9
+    adc r13,r11
+    add r12,rdi
+    adc r13,$0
 
-        mov r8,[rsi + 16]
-        xor r9,r9
-        xor r11,r11
-        xor rdi,rdi
+; start third chain
 
-        add r15,r8
-        adc r10,r9
+    mov r8,[rsi + 16]
+    xor r9,r9
+    xor r11,r11
+    xor rdi,rdi
 
-    ; reduce by r[2] * k
+    add r15,r8
+    adc r10,r9
 
-        mov rdx,r15
-        mulx r8,rdx,[ np ]
-        mulx r9,r8,[q + 0]
-        mulx r11,rdi,[q + 8]
-        add r15,r8
-        adc r10,r9
-        adc r12,r11
-        adc r13,$0
-        adc r14,$0
-        add r10,rdi
-        mulx r9,r8,[q + 16]
-        mulx r11,rdi,[q + 24]
-        adc r12,r8
-        adc r13,r9
-        adc r14,r11
-        add r13,rdi
-        adc r14,$0
+; reduce by r[2] * k
 
-    ; start fourth chain
+    mov rdx,r15
+    mulx r8,rdx,[ np ]
+    mulx r9,r8,[q + 0]
+    mulx r11,rdi,[q + 8]
+    add r15,r8
+    adc r10,r9
+    adc r12,r11
+    adc r13,$0
+    adc r14,$0
+    add r10,rdi
+    mulx r9,r8,[q + 16]
+    mulx r11,rdi,[q + 24]
+    adc r12,r8
+    adc r13,r9
+    adc r14,r11
+    add r13,rdi
+    adc r14,$0
 
-        mov r8,[rsi + 24]
-        xor r9,r9
-        xor r11,r11
-        xor rdi,rdi
+; start fourth chain
 
-        add r10,r8
+    mov r8,[rsi + 24]
+    xor r9,r9
+    xor r11,r11
+    xor rdi,rdi
 
-    ; reduce by r[3] * k
+    add r10,r8
 
-        mov rdx,r10
-        mulx r8,rdx,[ np ]
-        mulx r9,r8,[q + 0]
-        mulx r11,rdi,[q + 8]
-        add r10,r8
-        adc r12,r9
-        adc r13,r11
-        adc r14,$0
-        adc r15,$0
-        add r12,rdi
-        mulx r9,r8,[q + 16]
-        mulx rdx,rdi,[q + 24]
-        adc r13,r8
-        adc r14,r9
-        adc r15,rdx
-        add r14,rdi
-        adc r15,$0
+; reduce by r[3] * k
 
-        pop rdi
+    mov rdx,r10
+    mulx r8,rdx,[ np ]
+    mulx r9,r8,[q + 0]
+    mulx r11,rdi,[q + 8]
+    add r10,r8
+    adc r12,r9
+    adc r13,r11
+    adc r14,$0
+    adc r15,$0
+    add r12,rdi
+    mulx r9,r8,[q + 16]
+    mulx rdx,rdi,[q + 24]
+    adc r13,r8
+    adc r14,r9
+    adc r15,rdx
+    add r14,rdi
+    adc r15,$0
 
-        mov [rdi + 0],r12
-        mov [rdi + 8],r13
-        mov [rdi + 16],r14
-        mov [rdi + 24],r15
+    pop rdi
 
-        pop r12
-        pop r13
-        pop r14
-        pop r15
-        ret
-    tachyon_math_bn254_fr_rawMSquare_no_adx:
-        push r15
-        push r14
-        push r13
-        push r12
-        push rdi
-        mov rdx,[rsi + 0]
+    mov [rdi + 0],r12
+    mov [rdi + 8],r13
+    mov [rdi + 16],r14
+    mov [rdi + 24],r15
 
-        xor r8,r8
-        mulx r10,r9,[rsi + 8]
-        mulx r15,r8,[rsi + 16]
-        mulx r12,r11,[rsi + 24]
-        add r10,r8
-        adc r11,r15
-        mov rdx,[rsi + 8]
-        mulx r15,r8,[rsi + 16]
-        mulx rcx,rdi,[rsi + 24]
-        mov rdx,[rsi + 24]
-        mulx r14,r13,[rsi + 16]
-        adc r12,rdi
-        adc r13,rcx
-        adc r14,$0
-        add r11,r8
-        adc r12,r15
-        adc r13,$0
-        add r9,r9
-        adc r10,r10
-        adc r11,r11
-        adc r12,r12
-        adc r13,r13
-        adc r14,r14
-        mov rdx,[rsi + 0]
-        mulx rcx,r8,rdx
-        mov rdx,[rsi + 16]
-        mulx rdi,rdx,rdx
-        add r12,rdx
-        adc r13,rdi
-        adc r14,$0
-        add r9,rcx
-        mov rdx,[rsi + 24]
-        mulx r15,rcx,rdx
-        mov rdx,[rsi + 8]
-        mulx rdx,rdi,rdx
-        adc r10,rdi
-        adc r11,rdx
-        adc r12,$0
-        add r14,rcx
-        adc r15,$0
-        mov rdx,r8
-        mulx rdi,rdx,[ np ]
-        mulx rcx,rdi,[q + 0]
-        add r8,rdi
-        adc r9,rcx
-        mulx rcx,rdi,[q + 8]
-        adc r10,rcx
-        adc r11,$0
-        add r9,rdi
-        mulx rcx,rdi,[q + 16]
-        mulx rdx,r8,[q + 24]
-        adc r10,rdi
-        adc r11,rcx
-        adc r12,rdx
-        adc r13,$0
-        add r11,r8
-        adc r12,$0
-        mov rdx,r9
-        mulx rdi,rdx,[ np ]
-        mulx rcx,rdi,[q + 0]
-        add r9,rdi
-        adc r10,rcx
-        mulx rcx,rdi,[q + 8]
-        adc r11,rcx
-        adc r12,$0
-        add r10,rdi
-        mulx rcx,rdi,[q + 16]
-        mulx r9,r8,[q + 24]
-        adc r11,rdi
-        adc r12,rcx
-        adc r13,r9
-        adc r14,$0
-        add r12,r8
-        adc r13,$0
-        mov rdx,r10
-        mulx rdi,rdx,[ np ]
-        mulx rcx,rdi,[q + 0]
-        add r10,rdi
-        adc r11,rcx
-        mulx rcx,rdi,[q + 8]
-        mulx r9,r8,[q + 16]
-        mulx rdx,r10,[q + 24]
-        adc r12,rcx
-        adc r13,r9
-        adc r14,rdx
-        adc r15,$0
-        add r11,rdi
-        adc r12,r8
-        adc r13,r10
-        adc r14,$0
-        mov rdx,r11
-        mulx rdi,rdx,[ np ]
-        mulx rcx,rdi,[q + 0]
-        mulx r9,r8,[q + 8]
-        add r11,rdi
-        adc r12,r8
-        adc r13,r9
-        mulx r9,r8,[q + 16]
-        mulx r11,r10,[q + 24]
-        adc r14,r9
-        adc r15,r11
-        add r12,rcx
-        adc r13,r8
-        adc r14,r10
-        adc r15,$0
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+    ret
 
-        pop rdi
+tachyon_math_bn254_fr_rawMSquare_no_adx:
+    push r15
+    push r14
+    push r13
+    push r12
+    push rdi
+    mov rdx,[rsi + 0]
 
-        mov [rdi + 0],r12
-        mov [rdi + 8],r13
-        mov [rdi + 16],r14
-        mov [rdi + 24],r15
+    xor r8,r8
+    mulx r10,r9,[rsi + 8]
+    mulx r15,r8,[rsi + 16]
+    mulx r12,r11,[rsi + 24]
+    add r10,r8
+    adc r11,r15
+    mov rdx,[rsi + 8]
+    mulx r15,r8,[rsi + 16]
+    mulx rcx,rdi,[rsi + 24]
+    mov rdx,[rsi + 24]
+    mulx r14,r13,[rsi + 16]
+    adc r12,rdi
+    adc r13,rcx
+    adc r14,$0
+    add r11,r8
+    adc r12,r15
+    adc r13,$0
+    add r9,r9
+    adc r10,r10
+    adc r11,r11
+    adc r12,r12
+    adc r13,r13
+    adc r14,r14
+    mov rdx,[rsi + 0]
+    mulx rcx,r8,rdx
+    mov rdx,[rsi + 16]
+    mulx rdi,rdx,rdx
+    add r12,rdx
+    adc r13,rdi
+    adc r14,$0
+    add r9,rcx
+    mov rdx,[rsi + 24]
+    mulx r15,rcx,rdx
+    mov rdx,[rsi + 8]
+    mulx rdx,rdi,rdx
+    adc r10,rdi
+    adc r11,rdx
+    adc r12,$0
+    add r14,rcx
+    adc r15,$0
+    mov rdx,r8
+    mulx rdi,rdx,[ np ]
+    mulx rcx,rdi,[q + 0]
+    add r8,rdi
+    adc r9,rcx
+    mulx rcx,rdi,[q + 8]
+    adc r10,rcx
+    adc r11,$0
+    add r9,rdi
+    mulx rcx,rdi,[q + 16]
+    mulx rdx,r8,[q + 24]
+    adc r10,rdi
+    adc r11,rcx
+    adc r12,rdx
+    adc r13,$0
+    add r11,r8
+    adc r12,$0
+    mov rdx,r9
+    mulx rdi,rdx,[ np ]
+    mulx rcx,rdi,[q + 0]
+    add r9,rdi
+    adc r10,rcx
+    mulx rcx,rdi,[q + 8]
+    adc r11,rcx
+    adc r12,$0
+    add r10,rdi
+    mulx rcx,rdi,[q + 16]
+    mulx r9,r8,[q + 24]
+    adc r11,rdi
+    adc r12,rcx
+    adc r13,r9
+    adc r14,$0
+    add r12,r8
+    adc r13,$0
+    mov rdx,r10
+    mulx rdi,rdx,[ np ]
+    mulx rcx,rdi,[q + 0]
+    add r10,rdi
+    adc r11,rcx
+    mulx rcx,rdi,[q + 8]
+    mulx r9,r8,[q + 16]
+    mulx rdx,r10,[q + 24]
+    adc r12,rcx
+    adc r13,r9
+    adc r14,rdx
+    adc r15,$0
+    add r11,rdi
+    adc r12,r8
+    adc r13,r10
+    adc r14,$0
+    mov rdx,r11
+    mulx rdi,rdx,[ np ]
+    mulx rcx,rdi,[q + 0]
+    mulx r9,r8,[q + 8]
+    add r11,rdi
+    adc r12,r8
+    adc r13,r9
+    mulx r9,r8,[q + 16]
+    mulx r11,r10,[q + 24]
+    adc r14,r9
+    adc r15,r11
+    add r12,rcx
+    adc r13,r8
+    adc r14,r10
+    adc r15,$0
 
-        pop r12
-        pop r13
-        pop r14
-        pop r15
-        ret
+    pop rdi
+
+    mov [rdi + 0],r12
+    mov [rdi + 8],r13
+    mov [rdi + 16],r14
+    mov [rdi + 24],r15
+
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+    ret
 
 
         section .data

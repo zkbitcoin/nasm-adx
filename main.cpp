@@ -106,5 +106,38 @@ int main(int argc, char* argv[]) {
     for (size_t i = 0; i < 4; ++i)
         printf("limbs_r[%zu] is %" PRIu64 "\t", i, limbs_r[i]);
 
+    //
+    
+    printf("\n\ntachyon_math_bn254_fr_rawMSquare_no_adx \n");
+    tachyon_math_bn254_fr_rawMSquare_no_adx(limbs_r,  limbs_a);
+
+    printf("\n");
+
+    for (size_t i = 0; i < 4; ++i)
+        printf("limbs_r[%zu] is %" PRIu64 "\t", i, limbs_r[i]);
+
+    printf("\n");
+
+    printf("\n\n__asm__(SQR) (WITHOUT ADX) \n");
+
+    __asm__(SQR("%0")
+            // "movq %[r_ptr], %%rsi                   \n\t"
+            STORE_FIELD_ELEMENT("%1", "%%r12", "%%r13", "%%r14", "%%r15")
+            :
+            : "r"(&limbs_a),
+              "r"(&limbs_r),
+              [zero_reference] "m"(zero_ref),
+              [modulus_0] "m"(modulus_0),
+              [modulus_1] "m"(modulus_1),
+              [modulus_2] "m"(modulus_2),
+              [modulus_3] "m"(modulus_3),
+              [r_inv] "m"(r_inv)
+            : "%rcx", "%rdx", "%rdi", "%r8", "%r9", "%r10", "%r11", "%r12", "%r13", "%r14", "%r15", "cc", "memory");
+
+    printf("\n");
+
+    for (size_t i = 0; i < 4; ++i)
+        printf("limbs_r[%zu] is %" PRIu64 "\t", i, limbs_r[i]);
+
     return EXIT_SUCCESS;
 }

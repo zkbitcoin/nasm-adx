@@ -306,7 +306,7 @@
  * Compute Montgomery multiplication of a, b.
  * Result is stored, in (%%r12, %%r13, %%r14, %%r15), in preparation for being stored in "r"
  **/
-#define MUL_no_adx(a1, a2, a3, a4, b)     \
+#define MUL_with_adx(a1, a2, a3, a4, b)     \
         "movq " a1 ", %%rdx                        \n\t" /* load a[0] into %rdx                                     */  \
         "xorq %%r8, %%r8                           \n\t" /* clear r10 register, we use this when we need 0          */  \
         /* front-load mul ops, can parallelize 4 of these but latency is 4 cycles */                                    \

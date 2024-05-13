@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
     for (size_t i = 0; i < 4; ++i)
         printf("limbs_r[%zu] is %" PRIu64 "\t", i, limbs_r[i]);
 
-    printf("\n\n__asm__(MUL) (NO ADX) \n");
+    printf("\n\n__asm__(MUL) (WITH ADX) \n");
 
     __asm__(MUL_with_adx("0(%0)", "8(%0)", "16(%0)", "24(%0)", "%1")
                 STORE_FIELD_ELEMENT("%2", "%%r12", "%%r13", "%%r14", "%%r15")

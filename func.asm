@@ -1,54 +1,57 @@
 
 
-        global Fr_copy
-        global Fr_copyn
-        global Fr_add
-        global Fr_sub
-        global Fr_neg
-        global Fr_mul
-        global Fr_square
-        global Fr_band
-        global Fr_bor
-        global Fr_bxor
-        global Fr_bnot
-        global Fr_shl
-        global Fr_shr
-        global Fr_eq
-        global Fr_neq
-        global Fr_lt
-        global Fr_gt
-        global Fr_leq
-        global Fr_geq
-        global Fr_land
-        global Fr_lor
-        global Fr_lnot
-        global Fr_toNormal
-        global Fr_toLongNormal
-        global Fr_toMontgomery
-        global Fr_toInt
-        global Fr_isTrue
-        global Fr_q
-        global Fr_R3
+        global tachyon_math_bn254_fr_copy
+        global tachyon_math_bn254_fr_copyn
+        global tachyon_math_bn254_fr_add
+        global tachyon_math_bn254_fr_sub
+        global tachyon_math_bn254_fr_neg
+        global tachyon_math_bn254_fr_mul
+        global tachyon_math_bn254_fr_square
+        global tachyon_math_bn254_fr_band
+        global tachyon_math_bn254_fr_bor
+        global tachyon_math_bn254_fr_bxor
+        global tachyon_math_bn254_fr_bnot
+        global tachyon_math_bn254_fr_shl
+        global tachyon_math_bn254_fr_shr
+        global tachyon_math_bn254_fr_eq
+        global tachyon_math_bn254_fr_neq
+        global tachyon_math_bn254_fr_lt
+        global tachyon_math_bn254_fr_gt
+        global tachyon_math_bn254_fr_leq
+        global tachyon_math_bn254_fr_geq
+        global tachyon_math_bn254_fr_land
+        global tachyon_math_bn254_fr_lor
+        global tachyon_math_bn254_fr_lnot
+        global tachyon_math_bn254_fr_toNormal
+        global tachyon_math_bn254_fr_toLongNormal
+        global tachyon_math_bn254_fr_toMontgomery
+        global tachyon_math_bn254_fr_toInt
+        global tachyon_math_bn254_fr_isTrue
+        global tachyon_math_bn254_fr_q
+        global tachyon_math_bn254_fr_R3
 
-        global Fr_rawCopy
-        global Fr_rawZero
-        global Fr_rawSwap
-        global Fr_rawAdd
-        global Fr_rawSub
-        global Fr_rawNeg
-        global Fr_rawMMul
-        global Fr_rawMMul1
-        global Fr_rawMSquare
-        global Fr_rawToMontgomery
-        global Fr_rawFromMontgomery
-        global Fr_rawIsEq
-        global Fr_rawIsZero
-        global Fr_rawShr
-        global Fr_rawShl
-        global Fr_rawq
-        global Fr_rawR3
+        global tachyon_math_bn254_fr_rawCopy
+        global tachyon_math_bn254_fr_rawZero
+        global tachyon_math_bn254_fr_rawSwap
+        global tachyon_math_bn254_fr_rawAdd
+        global tachyon_math_bn254_fr_rawSub
+        global tachyon_math_bn254_fr_rawNeg
+        global tachyon_math_bn254_fr_rawMMul
+        global tachyon_math_bn254_fr_rawMMul_no_adx
+        global tachyon_math_bn254_fr_rawMMul1
+        global tachyon_math_bn254_fr_rawMSquare
+        global tachyon_math_bn254_fr_rawMSquare_no_adx
+        global tachyon_math_bn254_fr_rawToMontgomery
+        global tachyon_math_bn254_fr_rawFromMontgomery
+        global tachyon_math_bn254_fr_rawFromMontgomery_no_adx
+        global tachyon_math_bn254_fr_rawIsEq
+        global tachyon_math_bn254_fr_rawIsZero
+        global tachyon_math_bn254_fr_rawShr
+        global tachyon_math_bn254_fr_rawShl
+        global tachyon_math_bn254_fr_rawq
+        global tachyon_math_bn254_fr_rawR3
 
-        ;extern Fr_fail
+        ;extern tachyon_math_bn254_fr_fail
         DEFAULT REL
 
         section .text
@@ -84,7 +87,7 @@
 ; Nidified registers:
 ;   rax
 ;;;;;;;;;;;;;;;;;;;;;;;
-Fr_copy:
+tachyon_math_bn254_fr_copy:
 
         mov     rax, [rsi + 0]
         mov     [rdi + 0], rax
@@ -115,7 +118,7 @@ Fr_copy:
 ; Nidified registers:
 ;   rax
 ;;;;;;;;;;;;;;;;;;;;;;;
-Fr_rawCopy:
+tachyon_math_bn254_fr_rawCopy:
 
         mov     rax, [rsi + 0]
         mov     [rdi + 0], rax
@@ -142,7 +145,7 @@ Fr_rawCopy:
 ; Nidified registers:
 ;   rax
 ;;;;;;;;;;;;;;;;;;;;;;;
-Fr_rawZero:
+tachyon_math_bn254_fr_rawZero:
         xor     rax, rax
 
         mov     [rdi + 0], rax
@@ -166,7 +169,7 @@ Fr_rawZero:
 ; Nidified registers:
 ;   rax
 ;;;;;;;;;;;;;;;;;;;;;;;
-Fr_rawSwap:
+tachyon_math_bn254_fr_rawSwap:
 
         mov     rax, [rsi + 0]
         mov     rcx, [rdi + 0]
@@ -203,8 +206,8 @@ Fr_rawSwap:
 ; Nidified registers:
 ;   rax
 ;;;;;;;;;;;;;;;;;;;;;;;
-Fr_copyn:
-Fr_copyn_loop:
+tachyon_math_bn254_fr_copyn:
+tachyon_math_bn254_fr_copyn_loop:
         mov     r8, rsi
         mov     r9, rdi
         mov     rax, 5
@@ -276,47 +279,47 @@ u64toLong_adjust_neg:
 ; Returs:
 ;   rax <= The value
 ;;;;;;;;;;;;;;;;;;;;;;;
-Fr_toInt:
+tachyon_math_bn254_fr_toInt:
         mov     rax, [rdi]
         bt      rax, 63
-        jc      Fr_long
+        jc      tachyon_math_bn254_fr_long
         movsx   rax, eax
         ret
 
-Fr_long:
+tachyon_math_bn254_fr_long:
         push   rbp
         push   rsi
         push   rdx
         mov    rbp, rsp
         bt      rax, 62
-        jnc     Fr_longNormal
-Fr_longMontgomery:
+        jnc     tachyon_math_bn254_fr_longNormal
+tachyon_math_bn254_fr_longMontgomery:
 
         sub  rsp, 40
         push rsi
         mov  rsi, rdi
         mov  rdi, rsp
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         pop  rsi
 
 
-Fr_longNormal:
+tachyon_math_bn254_fr_longNormal:
         mov     rax, [rdi + 8]
         mov     rcx, rax
         shr     rcx, 31
-        jnz     Fr_longNeg
+        jnz     tachyon_math_bn254_fr_longNeg
 
         mov     rcx, [rdi + 16]
         test    rcx, rcx
-        jnz     Fr_longNeg
+        jnz     tachyon_math_bn254_fr_longNeg
 
         mov     rcx, [rdi + 24]
         test    rcx, rcx
-        jnz     Fr_longNeg
+        jnz     tachyon_math_bn254_fr_longNeg
 
         mov     rcx, [rdi + 32]
         test    rcx, rcx
-        jnz     Fr_longNeg
+        jnz     tachyon_math_bn254_fr_longNeg
 
         mov rsp, rbp
         pop rdx
@@ -324,37 +327,37 @@ Fr_longNormal:
         pop rbp
         ret
 
-Fr_longNeg:
+tachyon_math_bn254_fr_longNeg:
         mov     rax, [rdi + 8]
         sub     rax, [q]
-        jnc     Fr_longErr
+        jnc     tachyon_math_bn254_fr_longErr
 
         mov     rcx, [rdi + 16]
         sbb     rcx, [q + 8]
-        jnc     Fr_longErr
+        jnc     tachyon_math_bn254_fr_longErr
 
         mov     rcx, [rdi + 24]
         sbb     rcx, [q + 16]
-        jnc     Fr_longErr
+        jnc     tachyon_math_bn254_fr_longErr
 
         mov     rcx, [rdi + 32]
         sbb     rcx, [q + 24]
-        jnc     Fr_longErr
+        jnc     tachyon_math_bn254_fr_longErr
 
         mov     rcx, rax
         sar     rcx, 31
         add     rcx, 1
-        jnz     Fr_longErr
+        jnz     tachyon_math_bn254_fr_longErr
         mov rsp, rbp
         pop rdx
         pop rsi
         pop rbp
         ret
 
-Fr_longErr:
+tachyon_math_bn254_fr_longErr:
         push    rdi
         mov     rdi, 0
-        ;call    Fr_fail
+        ;call    tachyon_math_bn254_fr_fail
         pop     rdi
         mov rsp, rbp
         pop rdx
@@ -365,8 +368,7 @@ Fr_longErr:
 
 
 
-
-   Fr_rawMMul:
+tachyon_math_bn254_fr_rawMMul_no_adx:
     push r15
     push r14
     push r13
@@ -543,8 +545,558 @@ Fr_longErr:
     pop r14
     pop r15
     ret
+tachyon_math_bn254_fr_rawFromMontgomery_no_adx:
+    push r15
+    push r14
+    push r13
+    push r12
+    push rdi
+    mov rcx,rdx
 
-Fr_rawMSquare:
+; start computing modular reduction
+; start first chain
+
+    mov r13,[rsi + 0]
+    xor r14,r14
+    xor r10,r10
+    xor r15,r15
+    xor r12,r12
+    mov rdx,[rsi + 0]
+    mulx r11,rdx,[ np ]
+    adc r12,$0
+
+; reduce by r[0] * k
+
+    mulx r9,r8,[q + 0]
+    mulx r11,rdi,[q + 8]
+    add r13,r8
+    adc r14,rdi
+    adc r15,r11
+    mov r10,$0
+    mov r12,$0
+    add r14,r9
+    mulx r9,r8,[q + 16]
+    mulx r11,rdi,[q + 24]
+    adc r15,r8
+    adc r10,rdi
+    adc r12,r11
+    add r10,r9
+    adc r12,$0
+
+; start second chain
+
+    mov r8,[rsi + 8]
+    xor r9,r9
+    xor r11,r11
+    xor rdi,rdi
+
+    add r14,r8
+    adc r15,rdi
+
+; reduce by r[1] * k
+
+    mov rdx,r14
+    mulx r8,rdx,[ np ]
+    mulx r9,r8,[q + 0]
+    mulx r11,rdi,[q + 8]
+    add r14,r8
+    adc r15,rdi
+    adc r10,r11
+    adc r12,$0
+    adc r13,$0
+    add r15,r9
+    mulx r9,r8,[q + 16]
+    mulx r11,rdi,[q + 24]
+    adc r10,r8
+    adc r12,r9
+    adc r13,r11
+    add r12,rdi
+    adc r13,$0
+
+; start third chain
+
+    mov r8,[rsi + 16]
+    xor r9,r9
+    xor r11,r11
+    xor rdi,rdi
+
+    add r15,r8
+    adc r10,r9
+
+; reduce by r[2] * k
+
+    mov rdx,r15
+    mulx r8,rdx,[ np ]
+    mulx r9,r8,[q + 0]
+    mulx r11,rdi,[q + 8]
+    add r15,r8
+    adc r10,r9
+    adc r12,r11
+    adc r13,$0
+    adc r14,$0
+    add r10,rdi
+    mulx r9,r8,[q + 16]
+    mulx r11,rdi,[q + 24]
+    adc r12,r8
+    adc r13,r9
+    adc r14,r11
+    add r13,rdi
+    adc r14,$0
+
+; start fourth chain
+
+    mov r8,[rsi + 24]
+    xor r9,r9
+    xor r11,r11
+    xor rdi,rdi
+
+    add r10,r8
+
+; reduce by r[3] * k
+
+    mov rdx,r10
+    mulx r8,rdx,[ np ]
+    mulx r9,r8,[q + 0]
+    mulx r11,rdi,[q + 8]
+    add r10,r8
+    adc r12,r9
+    adc r13,r11
+    adc r14,$0
+    adc r15,$0
+    add r12,rdi
+    mulx r9,r8,[q + 16]
+    mulx rdx,rdi,[q + 24]
+    adc r13,r8
+    adc r14,r9
+    adc r15,rdx
+    add r14,rdi
+    adc r15,$0
+
+    pop rdi
+
+    mov [rdi + 0],r12
+    mov [rdi + 8],r13
+    mov [rdi + 16],r14
+    mov [rdi + 24],r15
+
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+    ret
+tachyon_math_bn254_fr_rawMSquare_no_adx:
+    push r15
+    push r14
+    push r13
+    push r12
+    push rdi
+    mov rdx,[rsi + 0]
+
+    xor r8,r8
+    mulx r10,r9,[rsi + 8]
+    mulx r15,r8,[rsi + 16]
+    mulx r12,r11,[rsi + 24]
+    add r10,r8
+    adc r11,r15
+    mov rdx,[rsi + 8]
+    mulx r15,r8,[rsi + 16]
+    mulx rcx,rdi,[rsi + 24]
+    mov rdx,[rsi + 24]
+    mulx r14,r13,[rsi + 16]
+    adc r12,rdi
+    adc r13,rcx
+    adc r14,$0
+    add r11,r8
+    adc r12,r15
+    adc r13,$0
+    add r9,r9
+    adc r10,r10
+    adc r11,r11
+    adc r12,r12
+    adc r13,r13
+    adc r14,r14
+    mov rdx,[rsi + 0]
+    mulx rcx,r8,rdx
+    mov rdx,[rsi + 16]
+    mulx rdi,rdx,rdx
+    add r12,rdx
+    adc r13,rdi
+    adc r14,$0
+    add r9,rcx
+    mov rdx,[rsi + 24]
+    mulx r15,rcx,rdx
+    mov rdx,[rsi + 8]
+    mulx rdx,rdi,rdx
+    adc r10,rdi
+    adc r11,rdx
+    adc r12,$0
+    add r14,rcx
+    adc r15,$0
+    mov rdx,r8
+    mulx rdi,rdx,[ np ]
+    mulx rcx,rdi,[q + 0]
+    add r8,rdi
+    adc r9,rcx
+    mulx rcx,rdi,[q + 8]
+    adc r10,rcx
+    adc r11,$0
+    add r9,rdi
+    mulx rcx,rdi,[q + 16]
+    mulx rdx,r8,[q + 24]
+    adc r10,rdi
+    adc r11,rcx
+    adc r12,rdx
+    adc r13,$0
+    add r11,r8
+    adc r12,$0
+    mov rdx,r9
+    mulx rdi,rdx,[ np ]
+    mulx rcx,rdi,[q + 0]
+    add r9,rdi
+    adc r10,rcx
+    mulx rcx,rdi,[q + 8]
+    adc r11,rcx
+    adc r12,$0
+    add r10,rdi
+    mulx rcx,rdi,[q + 16]
+    mulx r9,r8,[q + 24]
+    adc r11,rdi
+    adc r12,rcx
+    adc r13,r9
+    adc r14,$0
+    add r12,r8
+    adc r13,$0
+    mov rdx,r10
+    mulx rdi,rdx,[ np ]
+    mulx rcx,rdi,[q + 0]
+    add r10,rdi
+    adc r11,rcx
+    mulx rcx,rdi,[q + 8]
+    mulx r9,r8,[q + 16]
+    mulx rdx,r10,[q + 24]
+    adc r12,rcx
+    adc r13,r9
+    adc r14,rdx
+    adc r15,$0
+    add r11,rdi
+    adc r12,r8
+    adc r13,r10
+    adc r14,$0
+    mov rdx,r11
+    mulx rdi,rdx,[ np ]
+    mulx rcx,rdi,[q + 0]
+    mulx r9,r8,[q + 8]
+    add r11,rdi
+    adc r12,r8
+    adc r13,r9
+    mulx r9,r8,[q + 16]
+    mulx r11,r10,[q + 24]
+    adc r14,r9
+    adc r15,r11
+    add r12,rcx
+    adc r13,r8
+    adc r14,r10
+    adc r15,$0
+
+    pop rdi
+
+    mov [rdi + 0],r12
+    mov [rdi + 8],r13
+    mov [rdi + 16],r14
+    mov [rdi + 24],r15
+
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+    ret
+tachyon_math_bn254_fr_rawMMul:
+    push r15
+    push r14
+    push r13
+    push r12
+    mov rcx,rdx
+    mov r9,[ np ]
+    xor r10,r10
+
+; FirstLoop
+    mov rdx,[rsi + 0]
+    mulx rax,r11,[rcx]
+    mulx r8,r12,[rcx +8]
+    adcx r12,rax
+    mulx rax,r13,[rcx +16]
+    adcx r13,r8
+    mulx r8,r14,[rcx +24]
+    adcx r14,rax
+    mov r15,r10
+    adcx r15,r8
+; SecondLoop
+    mov rdx,r9
+    mulx rax,rdx,r11
+    mulx r8,rax,[q]
+    adcx rax,r11
+    mulx rax,r11,[q +8]
+    adcx r11,r8
+    adox r11,r12
+    mulx r8,r12,[q +16]
+    adcx r12,rax
+    adox r12,r13
+    mulx rax,r13,[q +24]
+    adcx r13,r8
+    adox r13,r14
+    mov r14,r10
+    adcx r14,rax
+    adox r14,r15
+
+; FirstLoop
+    mov rdx,[rsi + 8]
+    mov r15,r10
+    mulx r8,rax,[rcx +0]
+    adcx r11,rax
+    adox r12,r8
+    mulx r8,rax,[rcx +8]
+    adcx r12,rax
+    adox r13,r8
+    mulx r8,rax,[rcx +16]
+    adcx r13,rax
+    adox r14,r8
+    mulx r8,rax,[rcx +24]
+    adcx r14,rax
+    adox r15,r8
+    adcx r15,r10
+; SecondLoop
+    mov rdx,r9
+    mulx rax,rdx,r11
+    mulx r8,rax,[q]
+    adcx rax,r11
+    mulx rax,r11,[q +8]
+    adcx r11,r8
+    adox r11,r12
+    mulx r8,r12,[q +16]
+    adcx r12,rax
+    adox r12,r13
+    mulx rax,r13,[q +24]
+    adcx r13,r8
+    adox r13,r14
+    mov r14,r10
+    adcx r14,rax
+    adox r14,r15
+
+; FirstLoop
+    mov rdx,[rsi + 16]
+    mov r15,r10
+    mulx r8,rax,[rcx +0]
+    adcx r11,rax
+    adox r12,r8
+    mulx r8,rax,[rcx +8]
+    adcx r12,rax
+    adox r13,r8
+    mulx r8,rax,[rcx +16]
+    adcx r13,rax
+    adox r14,r8
+    mulx r8,rax,[rcx +24]
+    adcx r14,rax
+    adox r15,r8
+    adcx r15,r10
+; SecondLoop
+    mov rdx,r9
+    mulx rax,rdx,r11
+    mulx r8,rax,[q]
+    adcx rax,r11
+    mulx rax,r11,[q +8]
+    adcx r11,r8
+    adox r11,r12
+    mulx r8,r12,[q +16]
+    adcx r12,rax
+    adox r12,r13
+    mulx rax,r13,[q +24]
+    adcx r13,r8
+    adox r13,r14
+    mov r14,r10
+    adcx r14,rax
+    adox r14,r15
+
+; FirstLoop
+    mov rdx,[rsi + 24]
+    mov r15,r10
+    mulx r8,rax,[rcx +0]
+    adcx r11,rax
+    adox r12,r8
+    mulx r8,rax,[rcx +8]
+    adcx r12,rax
+    adox r13,r8
+    mulx r8,rax,[rcx +16]
+    adcx r13,rax
+    adox r14,r8
+    mulx r8,rax,[rcx +24]
+    adcx r14,rax
+    adox r15,r8
+    adcx r15,r10
+; SecondLoop
+    mov rdx,r9
+    mulx rax,rdx,r11
+    mulx r8,rax,[q]
+    adcx rax,r11
+    mulx rax,r11,[q +8]
+    adcx r11,r8
+    adox r11,r12
+    mulx r8,r12,[q +16]
+    adcx r12,rax
+    adox r12,r13
+    mulx rax,r13,[q +24]
+    adcx r13,r8
+    adox r13,r14
+    mov r14,r10
+    adcx r14,rax
+    adox r14,r15
+
+;comparison
+    cmp r14,[q + 24]
+    jc tachyon_math_bn254_fr_rawMMul_done
+    jnz tachyon_math_bn254_fr_rawMMul_sq
+    cmp r13,[q + 16]
+    jc tachyon_math_bn254_fr_rawMMul_done
+    jnz tachyon_math_bn254_fr_rawMMul_sq
+    cmp r12,[q + 8]
+    jc tachyon_math_bn254_fr_rawMMul_done
+    jnz tachyon_math_bn254_fr_rawMMul_sq
+    cmp r11,[q + 0]
+    jc tachyon_math_bn254_fr_rawMMul_done
+    jnz tachyon_math_bn254_fr_rawMMul_sq
+tachyon_math_bn254_fr_rawMMul_sq:
+    sub r11,[q +0]
+    sbb r12,[q +8]
+    sbb r13,[q +16]
+    sbb r14,[q +24]
+tachyon_math_bn254_fr_rawMMul_done:
+    mov [rdi + 0],r11
+    mov [rdi + 8],r12
+    mov [rdi + 16],r13
+    mov [rdi + 24],r14
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+    ret
+tachyon_math_bn254_fr_rawFromMontgomery:
+    push r15
+    push r14
+    push r13
+    push r12
+    mov rcx,rdx
+    mov r9,[ np ]
+    xor r10,r10
+
+; FirstLoop
+    mov r11,[rsi +0]
+    mov r12,[rsi +8]
+    mov r13,[rsi +16]
+    mov r14,[rsi +24]
+    mov r15,r10
+; SecondLoop
+    mov rdx,r9
+    mulx rax,rdx,r11
+    mulx r8,rax,[q]
+    adcx rax,r11
+    mulx rax,r11,[q +8]
+    adcx r11,r8
+    adox r11,r12
+    mulx r8,r12,[q +16]
+    adcx r12,rax
+    adox r12,r13
+    mulx rax,r13,[q +24]
+    adcx r13,r8
+    adox r13,r14
+    mov r14,r10
+    adcx r14,rax
+    adox r14,r15
+
+    mov r15,r10
+; SecondLoop
+    mov rdx,r9
+    mulx rax,rdx,r11
+    mulx r8,rax,[q]
+    adcx rax,r11
+    mulx rax,r11,[q +8]
+    adcx r11,r8
+    adox r11,r12
+    mulx r8,r12,[q +16]
+    adcx r12,rax
+    adox r12,r13
+    mulx rax,r13,[q +24]
+    adcx r13,r8
+    adox r13,r14
+    mov r14,r10
+    adcx r14,rax
+    adox r14,r15
+
+    mov r15,r10
+; SecondLoop
+    mov rdx,r9
+    mulx rax,rdx,r11
+    mulx r8,rax,[q]
+    adcx rax,r11
+    mulx rax,r11,[q +8]
+    adcx r11,r8
+    adox r11,r12
+    mulx r8,r12,[q +16]
+    adcx r12,rax
+    adox r12,r13
+    mulx rax,r13,[q +24]
+    adcx r13,r8
+    adox r13,r14
+    mov r14,r10
+    adcx r14,rax
+    adox r14,r15
+
+    mov r15,r10
+; SecondLoop
+    mov rdx,r9
+    mulx rax,rdx,r11
+    mulx r8,rax,[q]
+    adcx rax,r11
+    mulx rax,r11,[q +8]
+    adcx r11,r8
+    adox r11,r12
+    mulx r8,r12,[q +16]
+    adcx r12,rax
+    adox r12,r13
+    mulx rax,r13,[q +24]
+    adcx r13,r8
+    adox r13,r14
+    mov r14,r10
+    adcx r14,rax
+    adox r14,r15
+
+;comparison
+    cmp r14,[q + 24]
+    jc tachyon_math_bn254_fr_rawFromMontgomery_done
+    jnz tachyon_math_bn254_fr_rawFromMontgomery_sq
+    cmp r13,[q + 16]
+    jc tachyon_math_bn254_fr_rawFromMontgomery_done
+    jnz tachyon_math_bn254_fr_rawFromMontgomery_sq
+    cmp r12,[q + 8]
+    jc tachyon_math_bn254_fr_rawFromMontgomery_done
+    jnz tachyon_math_bn254_fr_rawFromMontgomery_sq
+    cmp r11,[q + 0]
+    jc tachyon_math_bn254_fr_rawFromMontgomery_done
+    jnz tachyon_math_bn254_fr_rawFromMontgomery_sq
+tachyon_math_bn254_fr_rawFromMontgomery_sq:
+    sub r11,[q +0]
+    sbb r12,[q +8]
+    sbb r13,[q +16]
+    sbb r14,[q +24]
+tachyon_math_bn254_fr_rawFromMontgomery_done:
+    mov [rdi + 0],r11
+    mov [rdi + 8],r12
+    mov [rdi + 16],r13
+    mov [rdi + 24],r14
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+    ret
+tachyon_math_bn254_fr_rawMSquare:
     push r15
     push r14
     push r13
@@ -686,23 +1238,23 @@ Fr_rawMSquare:
 
 ;comparison
     cmp r14,[q + 24]
-    jc Fr_rawMSquare_done
-    jnz Fr_rawMSquare_sq
+    jc tachyon_math_bn254_fr_rawMSquare_done
+    jnz tachyon_math_bn254_fr_rawMSquare_sq
     cmp r13,[q + 16]
-    jc Fr_rawMSquare_done
-    jnz Fr_rawMSquare_sq
+    jc tachyon_math_bn254_fr_rawMSquare_done
+    jnz tachyon_math_bn254_fr_rawMSquare_sq
     cmp r12,[q + 8]
-    jc Fr_rawMSquare_done
-    jnz Fr_rawMSquare_sq
+    jc tachyon_math_bn254_fr_rawMSquare_done
+    jnz tachyon_math_bn254_fr_rawMSquare_sq
     cmp r11,[q + 0]
-    jc Fr_rawMSquare_done
-    jnz Fr_rawMSquare_sq
-Fr_rawMSquare_sq:
+    jc tachyon_math_bn254_fr_rawMSquare_done
+    jnz tachyon_math_bn254_fr_rawMSquare_sq
+tachyon_math_bn254_fr_rawMSquare_sq:
     sub r11,[q +0]
     sbb r12,[q +8]
     sbb r13,[q +16]
     sbb r14,[q +24]
-Fr_rawMSquare_done:
+tachyon_math_bn254_fr_rawMSquare_done:
     mov [rdi + 0],r11
     mov [rdi + 8],r12
     mov [rdi + 16],r13
@@ -712,7 +1264,7 @@ Fr_rawMSquare_done:
     pop r14
     pop r15
     ret
-Fr_rawMMul1:
+tachyon_math_bn254_fr_rawMMul1:
     push r15
     push r14
     push r13
@@ -809,23 +1361,23 @@ Fr_rawMMul1:
 
 ;comparison
     cmp r14,[q + 24]
-    jc Fr_rawMMul1_done
-    jnz Fr_rawMMul1_sq
+    jc tachyon_math_bn254_fr_rawMMul1_done
+    jnz tachyon_math_bn254_fr_rawMMul1_sq
     cmp r13,[q + 16]
-    jc Fr_rawMMul1_done
-    jnz Fr_rawMMul1_sq
+    jc tachyon_math_bn254_fr_rawMMul1_done
+    jnz tachyon_math_bn254_fr_rawMMul1_sq
     cmp r12,[q + 8]
-    jc Fr_rawMMul1_done
-    jnz Fr_rawMMul1_sq
+    jc tachyon_math_bn254_fr_rawMMul1_done
+    jnz tachyon_math_bn254_fr_rawMMul1_sq
     cmp r11,[q + 0]
-    jc Fr_rawMMul1_done
-    jnz Fr_rawMMul1_sq
-Fr_rawMMul1_sq:
+    jc tachyon_math_bn254_fr_rawMMul1_done
+    jnz tachyon_math_bn254_fr_rawMMul1_sq
+tachyon_math_bn254_fr_rawMMul1_sq:
     sub r11,[q +0]
     sbb r12,[q +8]
     sbb r13,[q +16]
     sbb r14,[q +24]
-Fr_rawMMul1_done:
+tachyon_math_bn254_fr_rawMMul1_done:
     mov [rdi + 0],r11
     mov [rdi + 8],r12
     mov [rdi + 16],r13
@@ -835,124 +1387,7 @@ Fr_rawMMul1_done:
     pop r14
     pop r15
     ret
-Fr_rawFromMontgomery:
-    push r15
-    push r14
-    push r13
-    push r12
-    mov rcx,rdx
-    mov r9,[ np ]
-    xor r10,r10
 
-; FirstLoop
-    mov r11,[rsi +0]
-    mov r12,[rsi +8]
-    mov r13,[rsi +16]
-    mov r14,[rsi +24]
-    mov r15,r10
-; SecondLoop
-    mov rdx,r9
-    mulx rax,rdx,r11
-    mulx r8,rax,[q]
-    adcx rax,r11
-    mulx rax,r11,[q +8]
-    adcx r11,r8
-    adox r11,r12
-    mulx r8,r12,[q +16]
-    adcx r12,rax
-    adox r12,r13
-    mulx rax,r13,[q +24]
-    adcx r13,r8
-    adox r13,r14
-    mov r14,r10
-    adcx r14,rax
-    adox r14,r15
-
-    mov r15,r10
-; SecondLoop
-    mov rdx,r9
-    mulx rax,rdx,r11
-    mulx r8,rax,[q]
-    adcx rax,r11
-    mulx rax,r11,[q +8]
-    adcx r11,r8
-    adox r11,r12
-    mulx r8,r12,[q +16]
-    adcx r12,rax
-    adox r12,r13
-    mulx rax,r13,[q +24]
-    adcx r13,r8
-    adox r13,r14
-    mov r14,r10
-    adcx r14,rax
-    adox r14,r15
-
-    mov r15,r10
-; SecondLoop
-    mov rdx,r9
-    mulx rax,rdx,r11
-    mulx r8,rax,[q]
-    adcx rax,r11
-    mulx rax,r11,[q +8]
-    adcx r11,r8
-    adox r11,r12
-    mulx r8,r12,[q +16]
-    adcx r12,rax
-    adox r12,r13
-    mulx rax,r13,[q +24]
-    adcx r13,r8
-    adox r13,r14
-    mov r14,r10
-    adcx r14,rax
-    adox r14,r15
-
-    mov r15,r10
-; SecondLoop
-    mov rdx,r9
-    mulx rax,rdx,r11
-    mulx r8,rax,[q]
-    adcx rax,r11
-    mulx rax,r11,[q +8]
-    adcx r11,r8
-    adox r11,r12
-    mulx r8,r12,[q +16]
-    adcx r12,rax
-    adox r12,r13
-    mulx rax,r13,[q +24]
-    adcx r13,r8
-    adox r13,r14
-    mov r14,r10
-    adcx r14,rax
-    adox r14,r15
-
-;comparison
-    cmp r14,[q + 24]
-    jc Fr_rawFromMontgomery_done
-    jnz Fr_rawFromMontgomery_sq
-    cmp r13,[q + 16]
-    jc Fr_rawFromMontgomery_done
-    jnz Fr_rawFromMontgomery_sq
-    cmp r12,[q + 8]
-    jc Fr_rawFromMontgomery_done
-    jnz Fr_rawFromMontgomery_sq
-    cmp r11,[q + 0]
-    jc Fr_rawFromMontgomery_done
-    jnz Fr_rawFromMontgomery_sq
-Fr_rawFromMontgomery_sq:
-    sub r11,[q +0]
-    sbb r12,[q +8]
-    sbb r13,[q +16]
-    sbb r14,[q +24]
-Fr_rawFromMontgomery_done:
-    mov [rdi + 0],r11
-    mov [rdi + 8],r12
-    mov [rdi + 16],r13
-    mov [rdi + 24],r14
-    pop r12
-    pop r13
-    pop r14
-    pop r15
-    ret
 
 ;;;;;;;;;;;;;;;;;;;;;;
 ; rawToMontgomery
@@ -961,10 +1396,10 @@ Fr_rawFromMontgomery_done:
 ;   rdi <= Pointer destination element
 ;   rsi <= Pointer to src element
 ;;;;;;;;;;;;;;;;;;;;
-Fr_rawToMontgomery:
+tachyon_math_bn254_fr_rawToMontgomery:
     push    rdx
     lea     rdx, [R2]
-    call    Fr_rawMMul
+    call    tachyon_math_bn254_fr_rawMMul
     pop     rdx
     ret
 
@@ -977,7 +1412,7 @@ Fr_rawToMontgomery:
 ; Modified registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;
-Fr_toMontgomery:
+tachyon_math_bn254_fr_toMontgomery:
     mov     rax, [rsi]
     bt      rax, 62                     ; check if montgomery
     jc      toMontgomery_doNothing
@@ -992,7 +1427,7 @@ toMontgomeryShort:
     cmp     rdx, 0
     js      negMontgomeryShort
 posMontgomeryShort:
-    call    Fr_rawMMul1
+    call    tachyon_math_bn254_fr_rawMMul1
     sub     rdi, 8
             mov r11b, 0x40
         shl r11d, 24
@@ -1001,7 +1436,7 @@ posMontgomeryShort:
 
 negMontgomeryShort:
     neg     rdx              ; Do the multiplication positive and then negate the result.
-    call    Fr_rawMMul1
+    call    tachyon_math_bn254_fr_rawMMul1
     mov     rsi, rdi
     call    rawNegL
     sub     rdi, 8
@@ -1016,7 +1451,7 @@ toMontgomeryLong:
     add     rdi, 8
     add     rsi, 8
     lea     rdx, [R2]
-    call    Fr_rawMMul
+    call    tachyon_math_bn254_fr_rawMMul
     sub     rsi, 8
     sub     rdi, 8
             mov r11b, 0xC0
@@ -1026,7 +1461,7 @@ toMontgomeryLong:
 
 
 toMontgomery_doNothing:
-    call   Fr_copy
+    call   tachyon_math_bn254_fr_copy
     ret
 
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -1038,7 +1473,7 @@ toMontgomery_doNothing:
 ; Modified registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;
-Fr_toNormal:
+tachyon_math_bn254_fr_toNormal:
     mov     rax, [rsi]
     bt      rax, 62                     ; check if montgomery
     jnc     toNormal_doNothing
@@ -1048,7 +1483,7 @@ Fr_toNormal:
 toNormalLong:
     add     rdi, 8
     add     rsi, 8
-    call    Fr_rawFromMontgomery
+    call    tachyon_math_bn254_fr_rawFromMontgomery
     sub     rsi, 8
     sub     rdi, 8
             mov r11b, 0x80
@@ -1057,7 +1492,7 @@ toNormalLong:
     ret
 
 toNormal_doNothing:
-    call   Fr_copy
+    call   tachyon_math_bn254_fr_copy
     ret
 
 ;;;;;;;;;;;;;;;;;;;;;;
@@ -1069,19 +1504,19 @@ toNormal_doNothing:
 ; Modified registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;
-Fr_toLongNormal:
+tachyon_math_bn254_fr_toLongNormal:
     mov     rax, [rsi]
     bt      rax, 63                     ; check if long
     jnc     toLongNormal_fromShort
     bt      rax, 62                     ; check if montgomery
     jc      toLongNormal_fromMontgomery
-    call    Fr_copy              ; It is already long
+    call    tachyon_math_bn254_fr_copy              ; It is already long
     ret
 
 toLongNormal_fromMontgomery:
     add     rdi, 8
     add     rsi, 8
-    call    Fr_rawFromMontgomery
+    call    tachyon_math_bn254_fr_rawFromMontgomery
     sub     rsi, 8
     sub     rdi, 8
             mov r11b, 0x80
@@ -1121,7 +1556,7 @@ toLongNormal_fromShort:
 ; Modified Registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_add:
+tachyon_math_bn254_fr_add:
         push   rbp
         push   rsi
         push   rdx
@@ -1214,7 +1649,7 @@ add_l1ms2n:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toMontgomery
+        call tachyon_math_bn254_fr_toMontgomery
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -1300,7 +1735,7 @@ add_s1nl2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toMontgomery
+        call tachyon_math_bn254_fr_toMontgomery
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -1372,7 +1807,7 @@ add_l1nl2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toMontgomery
+        call tachyon_math_bn254_fr_toMontgomery
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -1405,7 +1840,7 @@ add_l1ml2n:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toMontgomery
+        call tachyon_math_bn254_fr_toMontgomery
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -1456,7 +1891,7 @@ add_l1ml2m:
 ;    rax
 ;;;;;;;;;;;;;;;;;;;;;;
 rawAddLL:
-Fr_rawAdd:
+tachyon_math_bn254_fr_rawAdd:
         ; Add component by component with carry
 
         mov rax, [rsi + 0]
@@ -1618,7 +2053,7 @@ rawAddLS_done:
 ; Modified Registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_sub:
+tachyon_math_bn254_fr_sub:
         push   rbp
         push   rsi
         push   rdx
@@ -1710,7 +2145,7 @@ sub_l1ms2n:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toMontgomery
+        call tachyon_math_bn254_fr_toMontgomery
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -1804,7 +2239,7 @@ sub_s1nl2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toMontgomery
+        call tachyon_math_bn254_fr_toMontgomery
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -1876,7 +2311,7 @@ sub_l1nl2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toMontgomery
+        call tachyon_math_bn254_fr_toMontgomery
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -1909,7 +2344,7 @@ sub_l1ml2n:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toMontgomery
+        call tachyon_math_bn254_fr_toMontgomery
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -2065,7 +2500,7 @@ rawSubSL_done:
 ;    rax
 ;;;;;;;;;;;;;;;;;;;;;;
 rawSubLL:
-Fr_rawSub:
+tachyon_math_bn254_fr_rawSub:
         ; Substract first digit
 
         mov rax, [rsi + 0]
@@ -2191,7 +2626,7 @@ rawNegSL_done:
 ;   rdi <= Pointer to result
 ;   [rdi] = -[rsi]
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_neg:
+tachyon_math_bn254_fr_neg:
         mov    rax, [rsi]
         bt     rax, 63          ; Check if is short first operand
         jc     neg_l
@@ -2237,7 +2672,7 @@ neg_l:
 ;   [rdi] = - [rsi]
 ;;;;;;;;;;;;;;;;;;;;;;
 rawNegL:
-Fr_rawNeg:
+tachyon_math_bn254_fr_rawNeg:
         ; Compare is zero
 
         xor rax, rax
@@ -2314,7 +2749,7 @@ doNegate:
 ; Modified Registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_square:
+tachyon_math_bn254_fr_square:
         mov    r8, [rsi]
         bt     r8, 63          ; Check if is short first operand
         jc     square_l1
@@ -2348,7 +2783,7 @@ square_l1n:
 
         add rdi, 8
         add rsi, 8
-        call Fr_rawMSquare
+        call tachyon_math_bn254_fr_rawMSquare
         sub rdi, 8
         sub rsi, 8
 
@@ -2357,7 +2792,7 @@ square_l1n:
         add rdi, 8
         mov rsi, rdi
         lea rdx, [R3]
-        call Fr_rawMMul
+        call tachyon_math_bn254_fr_rawMMul
         sub rdi, 8
         pop rsi
 
@@ -2370,7 +2805,7 @@ square_l1m:
 
         add rdi, 8
         add rsi, 8
-        call Fr_rawMSquare
+        call tachyon_math_bn254_fr_rawMSquare
         sub rdi, 8
         sub rsi, 8
 
@@ -2390,7 +2825,7 @@ square_l1m:
 ; Modified Registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_mul:
+tachyon_math_bn254_fr_mul:
         mov    r8, [rsi]
         mov    r9, [rdx]
         bt     r8, 63          ; Check if is short first operand
@@ -2442,7 +2877,7 @@ mul_l1ns2n:
 
         jns tmp_5
         neg rdx
-        call Fr_rawMMul1
+        call tachyon_math_bn254_fr_rawMMul1
         mov rsi, rdi
         call rawNegL
         sub rdi, 8
@@ -2450,7 +2885,7 @@ mul_l1ns2n:
 
         jmp tmp_6
 tmp_5:
-        call Fr_rawMMul1
+        call tachyon_math_bn254_fr_rawMMul1
         sub rdi, 8
         pop rsi
 tmp_6:
@@ -2461,7 +2896,7 @@ tmp_6:
         add rdi, 8
         mov rsi, rdi
         lea rdx, [R3]
-        call Fr_rawMMul
+        call tachyon_math_bn254_fr_rawMMul
         sub rdi, 8
         pop rsi
 
@@ -2476,7 +2911,7 @@ mul_l1ns2m:
         add rdi, 8
         add rsi, 8
         add rdx, 8
-        call Fr_rawMMul
+        call tachyon_math_bn254_fr_rawMMul
         sub rdi, 8
         sub rsi, 8
 
@@ -2499,7 +2934,7 @@ mul_l1ms2n:
 
         jns tmp_7
         neg rdx
-        call Fr_rawMMul1
+        call tachyon_math_bn254_fr_rawMMul1
         mov rsi, rdi
         call rawNegL
         sub rdi, 8
@@ -2507,7 +2942,7 @@ mul_l1ms2n:
 
         jmp tmp_8
 tmp_7:
-        call Fr_rawMMul1
+        call tachyon_math_bn254_fr_rawMMul1
         sub rdi, 8
         pop rsi
 tmp_8:
@@ -2523,7 +2958,7 @@ mul_l1ms2m:
         add rdi, 8
         add rsi, 8
         add rdx, 8
-        call Fr_rawMMul
+        call tachyon_math_bn254_fr_rawMMul
         sub rdi, 8
         sub rsi, 8
 
@@ -2550,7 +2985,7 @@ mul_s1nl2n:
 
         jns tmp_9
         neg rdx
-        call Fr_rawMMul1
+        call tachyon_math_bn254_fr_rawMMul1
         mov rsi, rdi
         call rawNegL
         sub rdi, 8
@@ -2558,7 +2993,7 @@ mul_s1nl2n:
 
         jmp tmp_10
 tmp_9:
-        call Fr_rawMMul1
+        call tachyon_math_bn254_fr_rawMMul1
         sub rdi, 8
         pop rsi
 tmp_10:
@@ -2569,7 +3004,7 @@ tmp_10:
         add rdi, 8
         mov rsi, rdi
         lea rdx, [R3]
-        call Fr_rawMMul
+        call tachyon_math_bn254_fr_rawMMul
         sub rdi, 8
         pop rsi
 
@@ -2588,7 +3023,7 @@ mul_s1nl2m:
 
         jns tmp_11
         neg rdx
-        call Fr_rawMMul1
+        call tachyon_math_bn254_fr_rawMMul1
         mov rsi, rdi
         call rawNegL
         sub rdi, 8
@@ -2596,7 +3031,7 @@ mul_s1nl2m:
 
         jmp tmp_12
 tmp_11:
-        call Fr_rawMMul1
+        call tachyon_math_bn254_fr_rawMMul1
         sub rdi, 8
         pop rsi
 tmp_12:
@@ -2615,7 +3050,7 @@ mul_s1ml2n:
         add rdi, 8
         add rsi, 8
         add rdx, 8
-        call Fr_rawMMul
+        call tachyon_math_bn254_fr_rawMMul
         sub rdi, 8
         sub rsi, 8
 
@@ -2629,7 +3064,7 @@ mul_s1ml2m:
         add rdi, 8
         add rsi, 8
         add rdx, 8
-        call Fr_rawMMul
+        call tachyon_math_bn254_fr_rawMMul
         sub rdi, 8
         sub rsi, 8
 
@@ -2650,7 +3085,7 @@ mul_l1nl2n:
         add rdi, 8
         add rsi, 8
         add rdx, 8
-        call Fr_rawMMul
+        call tachyon_math_bn254_fr_rawMMul
         sub rdi, 8
         sub rsi, 8
 
@@ -2659,7 +3094,7 @@ mul_l1nl2n:
         add rdi, 8
         mov rsi, rdi
         lea rdx, [R3]
-        call Fr_rawMMul
+        call tachyon_math_bn254_fr_rawMMul
         sub rdi, 8
         pop rsi
 
@@ -2673,7 +3108,7 @@ mul_l1nl2m:
         add rdi, 8
         add rsi, 8
         add rdx, 8
-        call Fr_rawMMul
+        call tachyon_math_bn254_fr_rawMMul
         sub rdi, 8
         sub rsi, 8
 
@@ -2690,7 +3125,7 @@ mul_l1ml2n:
         add rdi, 8
         add rsi, 8
         add rdx, 8
-        call Fr_rawMMul
+        call tachyon_math_bn254_fr_rawMMul
         sub rdi, 8
         sub rsi, 8
 
@@ -2704,7 +3139,7 @@ mul_l1ml2m:
         add rdi, 8
         add rsi, 8
         add rdx, 8
-        call Fr_rawMMul
+        call tachyon_math_bn254_fr_rawMMul
         sub rdi, 8
         sub rsi, 8
 
@@ -2739,7 +3174,7 @@ mul_l1ml2m:
 ; Modified Registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_band:
+tachyon_math_bn254_fr_band:
         push   rbp
         push   rsi
         push   rdx
@@ -2780,7 +3215,7 @@ tmp_13:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -2791,7 +3226,7 @@ tmp_13:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -2969,7 +3404,7 @@ tmp_16:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -3063,7 +3498,7 @@ and_l1ms2:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -3151,7 +3586,7 @@ tmp_21:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -3324,7 +3759,7 @@ tmp_26:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -3419,7 +3854,7 @@ and_s1l2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -3505,7 +3940,7 @@ tmp_31:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -3684,7 +4119,7 @@ and_l1nl2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -3776,7 +4211,7 @@ and_l1ml2n:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -3865,7 +4300,7 @@ and_l1ml2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -3877,7 +4312,7 @@ and_l1ml2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -3968,7 +4403,7 @@ tmp_43:
 ; Modified Registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_bor:
+tachyon_math_bn254_fr_bor:
         push   rbp
         push   rsi
         push   rdx
@@ -4009,7 +4444,7 @@ tmp_44:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -4020,7 +4455,7 @@ tmp_44:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -4198,7 +4633,7 @@ tmp_47:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -4292,7 +4727,7 @@ or_l1ms2:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -4380,7 +4815,7 @@ tmp_52:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -4553,7 +4988,7 @@ tmp_57:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -4648,7 +5083,7 @@ or_s1l2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -4734,7 +5169,7 @@ tmp_62:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -4913,7 +5348,7 @@ or_l1nl2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -5005,7 +5440,7 @@ or_l1ml2n:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -5094,7 +5529,7 @@ or_l1ml2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -5106,7 +5541,7 @@ or_l1ml2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -5197,7 +5632,7 @@ tmp_74:
 ; Modified Registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_bxor:
+tachyon_math_bn254_fr_bxor:
         push   rbp
         push   rsi
         push   rdx
@@ -5238,7 +5673,7 @@ tmp_75:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -5249,7 +5684,7 @@ tmp_75:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -5427,7 +5862,7 @@ tmp_78:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -5521,7 +5956,7 @@ xor_l1ms2:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -5609,7 +6044,7 @@ tmp_83:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -5782,7 +6217,7 @@ tmp_88:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -5877,7 +6312,7 @@ xor_s1l2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -5963,7 +6398,7 @@ tmp_93:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -6142,7 +6577,7 @@ xor_l1nl2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -6234,7 +6669,7 @@ xor_l1ml2n:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -6323,7 +6758,7 @@ xor_l1ml2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -6335,7 +6770,7 @@ xor_l1ml2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -6426,7 +6861,7 @@ tmp_105:
 ; Modified Registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_bnot:
+tachyon_math_bn254_fr_bnot:
         push   rbp
         push   rsi
         push   rdx
@@ -6445,7 +6880,7 @@ bnot_s:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -6463,7 +6898,7 @@ bnot_l1m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -6556,13 +6991,13 @@ tmp_107:
 ; Modified Registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_rawShr:
+tachyon_math_bn254_fr_rawShr:
 rawShr:
         cmp rdx, 0
-        je Fr_rawCopy
+        je tachyon_math_bn254_fr_rawCopy
 
         cmp rdx, 254
-        jae Fr_rawZero
+        jae tachyon_math_bn254_fr_rawZero
 
 rawShr_nz:
         mov r8, rdx
@@ -6757,13 +7192,13 @@ rawShr_endif3_3:
 ; Modified Registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_rawShl:
+tachyon_math_bn254_fr_rawShl:
 rawShl:
         cmp rdx, 0
-        je Fr_rawCopy
+        je tachyon_math_bn254_fr_rawCopy
 
         cmp rdx, 254
-        jae Fr_rawZero
+        jae tachyon_math_bn254_fr_rawZero
 
         mov r8, rdx
         shr r8,6
@@ -7082,7 +7517,7 @@ tmp_111:
 ; Modified Registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_shr:
+tachyon_math_bn254_fr_shr:
         push   rbp
         push   rsi
         push   rdi
@@ -7108,7 +7543,7 @@ Fr_shr:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -7182,7 +7617,7 @@ tmp_115:
 ; Modified Registers:
 ;    r8, r9, 10, r11, rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_shl:
+tachyon_math_bn254_fr_shl:
         push   rbp
         push   rsi
         push   rdi
@@ -7207,7 +7642,7 @@ Fr_shl:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -7306,7 +7741,7 @@ do_shlcl:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7322,7 +7757,7 @@ do_shll:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7375,7 +7810,7 @@ do_shrcl:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7390,7 +7825,7 @@ do_shrl:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7434,7 +7869,7 @@ setzero:
 ; Modified Registers:
 ;    r8, r9, rax
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_rgt:
+tachyon_math_bn254_fr_rgt:
         push   rbp
         push   rsi
         push   rdx
@@ -7468,7 +7903,7 @@ rgt_l1ns2:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -7483,7 +7918,7 @@ rgt_l1ms2:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -7494,7 +7929,7 @@ rgt_l1ms2:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7513,7 +7948,7 @@ rgt_s1l2n:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7527,7 +7962,7 @@ rgt_s1l2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7539,7 +7974,7 @@ rgt_s1l2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -7564,7 +7999,7 @@ rgt_l1nl2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -7581,7 +8016,7 @@ rgt_l1ml2n:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7595,7 +8030,7 @@ rgt_l1ml2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7607,7 +8042,7 @@ rgt_l1ml2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -7775,7 +8210,7 @@ rgt_ret1:
 ; Modified Registers:
 ;    r8, r9, rax
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_rlt:
+tachyon_math_bn254_fr_rlt:
         push   rbp
         push   rsi
         push   rdx
@@ -7809,7 +8244,7 @@ rlt_l1ns2:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -7824,7 +8259,7 @@ rlt_l1ms2:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -7835,7 +8270,7 @@ rlt_l1ms2:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7854,7 +8289,7 @@ rlt_s1l2n:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7868,7 +8303,7 @@ rlt_s1l2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7880,7 +8315,7 @@ rlt_s1l2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -7905,7 +8340,7 @@ rlt_l1nl2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -7922,7 +8357,7 @@ rlt_l1ml2n:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7936,7 +8371,7 @@ rlt_l1ml2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -7948,7 +8383,7 @@ rlt_l1ml2m:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toNormal
+        call tachyon_math_bn254_fr_toNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -8110,7 +8545,7 @@ rlt_ret1:
 ; Modified Registers:
 ;    r8, r9, rax
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_req:
+tachyon_math_bn254_fr_req:
         push   rbp
         push   rsi
         push   rdx
@@ -8144,7 +8579,7 @@ req_l1ns2:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -8159,7 +8594,7 @@ req_l1ms2:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toMontgomery
+        call tachyon_math_bn254_fr_toMontgomery
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -8178,7 +8613,7 @@ req_s1l2n:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toLongNormal
+        call tachyon_math_bn254_fr_toLongNormal
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -8192,7 +8627,7 @@ req_s1l2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toMontgomery
+        call tachyon_math_bn254_fr_toMontgomery
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -8216,7 +8651,7 @@ req_l1nl2m:
         mov  rdi, rsp
         push rdx
         push r8
-        call Fr_toMontgomery
+        call tachyon_math_bn254_fr_toMontgomery
         mov  rsi, rdi
         pop  rdi
         pop  rdx
@@ -8234,7 +8669,7 @@ req_l1ml2n:
         push rsi
         mov  rsi, rdx
         push r8
-        call Fr_toMontgomery
+        call tachyon_math_bn254_fr_toMontgomery
         mov  rdx, rdi
         pop  rdi
         pop  rsi
@@ -8296,8 +8731,8 @@ req_ret0:
 ; Modified Registers:
 ;    rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_gt:
-        call Fr_rgt
+tachyon_math_bn254_fr_gt:
+        call tachyon_math_bn254_fr_rgt
         mov [rdi], rax
         ret
 
@@ -8312,8 +8747,8 @@ Fr_gt:
 ; Modified Registers:
 ;    rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_lt:
-        call Fr_rlt
+tachyon_math_bn254_fr_lt:
+        call tachyon_math_bn254_fr_rlt
         mov [rdi], rax
         ret
 
@@ -8328,8 +8763,8 @@ Fr_lt:
 ; Modified Registers:
 ;    rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_eq:
-        call Fr_req
+tachyon_math_bn254_fr_eq:
+        call tachyon_math_bn254_fr_req
         mov [rdi], rax
         ret
 
@@ -8344,8 +8779,8 @@ Fr_eq:
 ; Modified Registers:
 ;    rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_neq:
-        call Fr_req
+tachyon_math_bn254_fr_neq:
+        call tachyon_math_bn254_fr_req
         xor rax, 1
         mov [rdi], rax
         ret
@@ -8361,8 +8796,8 @@ Fr_neq:
 ; Modified Registers:
 ;    rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_geq:
-        call Fr_rlt
+tachyon_math_bn254_fr_geq:
+        call tachyon_math_bn254_fr_rlt
         xor rax, 1
         mov [rdi], rax
         ret
@@ -8378,8 +8813,8 @@ Fr_geq:
 ; Modified Registers:
 ;    rax, rcx
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_leq:
-        call Fr_rgt
+tachyon_math_bn254_fr_leq:
+        call tachyon_math_bn254_fr_rgt
         xor rax, 1
         mov [rdi], rax
         ret
@@ -8398,7 +8833,7 @@ Fr_leq:
 ; Modified Registers:
 ;   rax
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_rawIsEq:
+tachyon_math_bn254_fr_rawIsEq:
 
         mov     rax, [rsi + 0]
         cmp     [rdi + 0], rax
@@ -8435,7 +8870,7 @@ rawIsEq_ret0:
 ; Modified Registers:
 ;   rax
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_rawIsZero:
+tachyon_math_bn254_fr_rawIsZero:
 
         cmp     qword [rdi + 0], $0
         jne     rawIsZero_ret0
@@ -8479,7 +8914,7 @@ rawIsZero_ret0:
 ; Modified Registers:
 ;    rax, rcx, r8
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_land:
+tachyon_math_bn254_fr_land:
 
 
 
@@ -8580,7 +9015,7 @@ done_127:
 ; Modified Registers:
 ;    rax, rcx, r8
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_lor:
+tachyon_math_bn254_fr_lor:
 
 
 
@@ -8680,7 +9115,7 @@ done_135:
 ; Modified Registers:
 ;    rax, rax, r8
 ;;;;;;;;;;;;;;;;;;;;;;
-Fr_lnot:
+tachyon_math_bn254_fr_lnot:
 
 
 
@@ -8743,7 +9178,7 @@ lnot_retOne:
 ; Returs:
 ;   rax <= 1 if true 0 if false
 ;;;;;;;;;;;;;;;;;;;;;;;
-Fr_isTrue:
+tachyon_math_bn254_fr_isTrue:
 
 
 
@@ -8788,23 +9223,21 @@ done_143:
 
         ret
 
-
-
-
-
         section .data
-Fr_q:
+tachyon_math_bn254_fq_q:
         dd      0
         dd      0x80000000
-Fr_rawq:
-q       dq      0x43e1f593f0000001,0x2833e84879b97091,0xb85045b68181585d,0x30644e72e131a029
-half    dq      0xa1f0fac9f8000000,0x9419f4243cdcb848,0xdc2822db40c0ac2e,0x183227397098d014
-R2      dq      0x1bb8e645ae216da7,0x53fe3ab1e35c59e3,0x8c49833d53bb8085,0x0216d0b17f4e44a5
-Fr_R3:
+tachyon_math_bn254_fq_rawq:
+q       dq      0x3c208c16d87cfd47,0x97816a916871ca8d,0xb85045b68181585d,0x30644e72e131a029
+half    dq      0x9e10460b6c3e7ea3,0xcbc0b548b438e546,0xdc2822db40c0ac2e,0x183227397098d014
+R2      dq      0xf32cfc5b538afa89,0xb5e71911d44501fb,0x47ab1eff0a417ff6,0x06d89f71cab8351f
+tachyon_math_bn254_fq_R3:
         dd      0
         dd      0x80000000
-Fr_rawR3:
-R3      dq      0x5e94d8e1b4bf0040,0x2a489cbe1cfbb6b8,0x893cc664a19fcfed,0x0cf8594b7fcc657c
+tachyon_math_bn254_fq_rawR3:
+R3      dq      0xb1cd6dafda1530df,0x62f210e6a7283db6,0xef7f0b0c0ada0afb,0x20fd6e902d592544
 lboMask dq      0x3fffffffffffffff
-np      dq      0xc2e1f593efffffff
+np      dq      0x87d20782e4866389
+
+
 

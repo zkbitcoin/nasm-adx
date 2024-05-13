@@ -85,5 +85,26 @@ int main(int argc, char* argv[]) {
     for (size_t i = 0; i < 4; ++i)
         printf("limbs_r[%zu] is %" PRIu64 "\t", i, limbs_r[i]);
 
+    printf("\n\n__asm__(MUL) (NO ADX) \n");
+
+    __asm__(MUL_no_adx("0(%0)", "8(%0)", "16(%0)", "24(%0)", "%1")
+                STORE_FIELD_ELEMENT("%2", "%%r12", "%%r13", "%%r14", "%%r15")
+            :
+            : "%r"(&limbs_a),
+              "%r"(&limbs_b),
+              "r"(&limbs_r),
+              [modulus_0] "m"(modulus_0),
+              [modulus_1] "m"(modulus_1),
+              [modulus_2] "m"(modulus_2),
+              [modulus_3] "m"(modulus_3),
+              [r_inv] "m"(r_inv),
+              [zero_reference] "m"(zero_ref)
+            : "%rdx", "%rdi", "%r8", "%r9", "%r10", "%r11", "%r12", "%r13", "%r14", "%r15", "cc", "memory");
+
+    printf("\n");
+
+    for (size_t i = 0; i < 4; ++i)
+        printf("limbs_r[%zu] is %" PRIu64 "\t", i, limbs_r[i]);
+
     return EXIT_SUCCESS;
 }

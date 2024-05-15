@@ -4,7 +4,7 @@
 #include "asm_macros.hpp"
 
 extern "C" void tachyon_math_bn254_fr_rawMMul(uint64_t result[4], const uint64_t a[4], const uint64_t b[4]);
-extern "C" void tachyon_math_bn254_fr_rawMMul_no_adx(uint64_t result[4], const uint64_t a[4], const uint64_t b[4]);
+extern "C" void tachyon_math_bn254_fr_rawMMulx_no_adx(uint64_t result[4], const uint64_t a[4], const uint64_t b[4]);
 
 extern "C" void tachyon_math_bn254_fr_rawMSquare(uint64_t result[4], const uint64_t a[4]);
 extern "C" void tachyon_math_bn254_fr_rawMSquare_no_adx(uint64_t result[4], const uint64_t a[4]);
@@ -36,11 +36,17 @@ int main(int argc, char* argv[]) {
 
     printf("\n");
 
+
     for (size_t i = 0; i < 4; ++i)
         printf("limbs_r[%zu] is %" PRIu64 "\t", i, limbs_r[i]);
 
-    printf("\n\ntachyon_math_bn254_fr_rawMMul_no_adx \n");
-    tachyon_math_bn254_fr_rawMMul_no_adx(limbs_r,  limbs_a, limbs_b);
+    limbs_r[0] = 0;
+    limbs_r[1] = 0;
+    limbs_r[2] = 0;
+    limbs_r[3] = 0;
+
+    printf("\n\ntachyon_math_bn254_fr_rawMMulx_no_adx \n");
+    tachyon_math_bn254_fr_rawMMulx_no_adx(limbs_r,  limbs_a, limbs_b);
 
     printf("\n");
 

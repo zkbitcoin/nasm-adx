@@ -1,4 +1,5 @@
 global tachyon_math_bn254_fr_rawMMul_no_adx
+global tachyon_math_bn254_fr_rawMMulx_no_adx
 global tachyon_math_bn254_fr_rawMSquare_no_adx
 global tachyon_math_bn254_fr_rawFromMontgomery_no_adx
 
@@ -6,7 +7,248 @@ global tachyon_math_bn254_fr_rawFromMontgomery_no_adx
         DEFAULT REL
 
         section .text
+;;
 
+tachyon_math_bn254_fr_rawMMulx_no_adx:
+
+
+    push r15
+    push r14
+    push r13
+    push r12
+
+    xor r11,r11
+    xor r12,r12
+    xor r13,r13
+    xor r14,r14
+
+    mov rcx,rdx
+    mov r9,[ np ]
+    xor r10,r10
+
+
+
+    ; FirstLoop
+        mov rdx, [rsi + 0]
+        mulx rax, r11, [rcx]
+        mulx r8, r12, [rcx + 8]
+        adc r12, rax            ; Add with carry
+        mulx rax, r13, [rcx + 16]
+        adc r13, r8             ; Add with carry
+        mulx r8, r14, [rcx + 24]
+        adc r14, rax            ; Add with carry
+        mov r15, r10
+        adc r15, r8             ; Add with carry
+
+
+    ; SecondLoop
+        mov rdx, r9
+        mulx rax, rdx, r11
+        mulx r8, rax, [q]
+        adc rax, r11            ; Add with carry
+        mulx rax, r11, [q + 8]
+        adc r11, r8             ; Add with carry
+        add r11, r12            ; Add with overflow
+        adc r11, 0
+        mulx r8, r12, [q + 16]
+        adc r12, rax            ; Add with carry
+        add r12, r13            ; Add with overflow
+        adc r12, 0
+        mulx rax, r13, [q + 24]
+        adc r13, r8             ; Add with carry
+        add r13, r14            ; Add with overflow
+        adc r13, 0
+        mov r14, r10
+        adc r14, rax            ; Add with carry
+        add r14, r15            ; Add with overflow
+        adc r14, 0
+
+    ; FirstLoop
+        mov rdx,[rsi + 8]
+        mov r15,r10
+        mulx r8,rax,[rcx +0]
+        adc r11,rax
+        ;adox r12,r8
+        add r12, r8
+        adc r12, 0
+        mulx r8,rax,[rcx +8]
+        adc r12,rax
+        ;adox r13,r8
+        add r13, r8
+        adc r13, 0
+        mulx r8,rax,[rcx +16]
+        adc r13,rax
+        ;adox r14,r8
+        add r14, r8
+        adc r14, 0
+        mulx r8,rax,[rcx +24]
+        adc r14,rax
+        ;adox r15,r8
+        add r15, r8
+        adc r15, 0
+        adc r15,r10
+
+
+    ; SecondLoop
+        mov rdx,r9
+        mulx rax,rdx,r11
+        mulx r8,rax,[q]
+        adc rax,r11
+        mulx rax,r11,[q +8]
+        adc r11,r8
+        ;adox r11,r12
+        add r11, r12
+        adc r11, 0
+        mulx r8,r12,[q +16]
+        adc r12,rax
+        ;adox r12,r13
+        add r12, r13
+        adc r12, 0
+        mulx rax,r13,[q +24]
+        adc r13,r8
+        ;adox r13,r14
+        add r13, r14
+        adc r13, 0
+        mov r14,r10
+        adc r14,rax
+        ;adox r14,r15
+        add r14, r15
+        adc r14, 0
+
+    ; FirstLoop
+        mov rdx,[rsi + 16]
+        mov r15,r10
+        mulx r8,rax,[rcx +0]
+        adc r11,rax
+        ;adox r12,r8
+        add r12, r8
+        adc r12, 0
+        mulx r8,rax,[rcx +8]
+        adc r12,rax
+        ;adox r13,r8
+        add r13, r8
+        adc r13, 0
+        mulx r8,rax,[rcx +16]
+        adc r13,rax
+        ;adox r14,r8
+        add r14, r8
+        adc r14, 0
+        mulx r8,rax,[rcx +24]
+        adc r14,rax
+        ;adox r15,r8
+        add r15, r8
+        adc r15, 0
+        adc r15,r10
+
+    ; SecondLoop
+        mov rdx,r9
+        mulx rax,rdx,r11
+        mulx r8,rax,[q]
+        adc rax,r11
+        mulx rax,r11,[q +8]
+        adc r11,r8
+        ;adox r11,r12
+        add r11, r12
+        adc r11, 0
+        mulx r8,r12,[q +16]
+        adc r12,rax
+        ;adox r12,r13
+        add r12, r13
+        adc r12, 0
+        mulx rax,r13,[q +24]
+        adc r13,r8
+        ;adox r13,r14
+        add r13, r14
+        adc r13, 0
+        mov r14,r10
+        adc r14,rax
+        ;adox r14,r15
+        add r14, r15
+        adc r14, 0
+
+    ; FirstLoop
+        mov rdx,[rsi + 24]
+        mov r15,r10
+        mulx r8,rax,[rcx +0]
+        adc r11,rax
+        ;adox r12,r8
+        add r12, r8
+        adc r12, 0
+        mulx r8,rax,[rcx +8]
+        adc r12,rax
+        ; adox r13,r8
+        add r13, r8
+        adc r13, 0
+        mulx r8,rax,[rcx +16]
+        adc r13,rax
+        ; adox r14,r8
+        add r14, r8
+        adc r14, 0
+        mulx r8,rax,[rcx +24]
+        adc r14,rax
+        ;adox r15,r8
+        add r15, r8
+        adc r15, 0
+        adc r15,r10
+
+    ; SecondLoop
+        mov rdx,r9
+        mulx rax,rdx,r11
+        mulx r8,rax,[q]
+        adc rax,r11
+        mulx rax,r11,[q +8]
+        adc r11,r8
+        ; adox r11,r12
+        add r11, r12
+        adc r11, 0
+        mulx r8,r12,[q +16]
+        adc r12,rax
+        ; adox r12,r13
+        add r12, r13
+        adc r12, 0
+        mulx rax,r13,[q +24]
+        adc r13,r8
+        ; adox r13,r14
+        add r13, r14
+        adc r13, 0
+        mov r14,r10
+        adc r14,rax
+        ;adox r14,r15
+        add r14, r15
+        adc r14, 0
+
+    ;comparison
+        cmp r14,[q + 24]
+        jc tachyon_math_bn254_fr_rawMMulx_done
+        jnz tachyon_math_bn254_fr_rawMMulx_sq
+        cmp r13,[q + 16]
+        jc tachyon_math_bn254_fr_rawMMulx_done
+        jnz tachyon_math_bn254_fr_rawMMulx_sq
+        cmp r12,[q + 8]
+        jc tachyon_math_bn254_fr_rawMMulx_done
+        jnz tachyon_math_bn254_fr_rawMMulx_sq
+        cmp r11,[q + 0]
+        jc tachyon_math_bn254_fr_rawMMulx_done
+        jnz tachyon_math_bn254_fr_rawMMulx_sq
+    tachyon_math_bn254_fr_rawMMulx_sq:
+        sub r11,[q +0]
+        sbb r12,[q +8]
+        sbb r13,[q +16]
+        sbb r14,[q +24]
+    tachyon_math_bn254_fr_rawMMulx_done:
+
+
+    mov [rdi + 0], r11
+    mov [rdi + 8], r12
+    mov [rdi + 16], r13
+    mov [rdi + 24], r14
+    pop r12
+    pop r13
+    pop r14
+    pop r15
+    ret
+
+;;;;
 
 tachyon_math_bn254_fr_rawMMul_no_adx:
     push r15

@@ -3,12 +3,12 @@ ASMBIN = nasm
 
 all:	asm cc link 
 asm:
-	$(ASMBIN) -f elf64 func.asm
-	$(ASMBIN) -f elf64 func-fallback.asm
+	$(ASMBIN) -f elf64 test.asm
+	$(ASMBIN) -f elf64 fr.asm
 cc:
 	$(CC) -std=c++17 -Wall -c -g -O0 main.cpp
 link:	asm cc
-	$(CC) -o example main.o func.o func-fallback.o
+	$(CC) -g -no-pie -o example main.o test.o fr.o
 #func-fallback.o
 clean:
 	rm *.o

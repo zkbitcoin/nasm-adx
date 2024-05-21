@@ -6,6 +6,10 @@
 extern "C" void Fr_rawMMul(uint64_t[8], uint64_t[8], uint64_t[8]);
 extern "C" void rawMontgomeryMul_mulM(uint64_t[8], uint64_t[8], uint64_t[8]);
 
+extern "C" void Fr_rawMSquare(uint64_t[8], uint64_t[8]);
+extern "C" void rawMontgomerySquare(uint64_t[8], uint64_t[8]);
+
+
 
 
 void Fr_fail() {
@@ -31,9 +35,19 @@ int main(int argc, char* argv[]) {
     for (size_t i = 0; i < 8; ++i)
         printf("%" PRIu64 "\t", limbs_r[i]);
 
+    printf("\nFr_rawMSquare \n");
+    Fr_rawMSquare(limbs_r, limbs_a);
+
+    for (size_t i = 0; i < 8; ++i)
+        printf("%" PRIu64 "\t", limbs_r[i]);
+
+    printf("\nrawMontgomerySquare \n");
+    rawMontgomerySquare(limbs_r, limbs_a);
+
+    for (size_t i = 0; i < 8; ++i)
+        printf("%" PRIu64 "\t", limbs_r[i]);
+
     printf("\n");
-
-
 
     return EXIT_SUCCESS;
 }

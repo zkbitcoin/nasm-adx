@@ -6,19 +6,23 @@
 const int SIZE = 6;
 
 extern "C" void Fr_rawMMul(uint64_t[SIZE], uint64_t[SIZE], uint64_t[SIZE]);
-extern "C" void rawMontgomeryMul_mulM(uint64_t[SIZE], uint64_t[SIZE], uint64_t[SIZE]);
+extern "C" void Fr_no_adx_rawMMul(uint64_t[SIZE], uint64_t[SIZE], uint64_t[SIZE]);
 
 extern "C" void Fr_rawMSquare(uint64_t[SIZE], uint64_t[SIZE]);
-extern "C" void rawMontgomerySquare(uint64_t[SIZE], uint64_t[SIZE]);
+extern "C" void Fr_no_adx_rawMSquare(uint64_t[SIZE], uint64_t[SIZE]);
 
 extern "C" void Fr_rawToMontgomery(uint64_t[SIZE], uint64_t[SIZE]);
-extern "C" void rawToMontgomery(uint64_t[SIZE], uint64_t[SIZE]);
+extern "C" void Fr_no_adx_rawToMontgomery(uint64_t[SIZE], uint64_t[SIZE]);
 
 extern "C" void Fr_rawFromMontgomery(uint64_t[SIZE], uint64_t[SIZE]);
-extern "C" void rawFromMontgomery(uint64_t[SIZE], uint64_t[SIZE]);
+extern "C" void Fr_no_adx_rawFromMontgomery(uint64_t[SIZE], uint64_t[SIZE]);
+
+extern "C" void Fr_no_adx_fail();
 
 
 // using buildzqfield.js -q 89467411093844535899444521888242871839275222246405745257275088548364400416034343698204186575808495617 -n Fr
+// using buildzqfield.js -q 89467411093844535899444521888242871839275222246405745257275088548364400416034343698204186575808495617 -n Fr_no_adx --no_adx
+
 
 
 
@@ -36,8 +40,8 @@ int main(int argc, char* argv[]) {
     for (size_t i = 0; i < SIZE; ++i)
         printf("%" PRIu64 "\t", limbs_r[i]);
 
-    printf("\nrawMontgomeryMul_mulM \n");
-    rawMontgomeryMul_mulM(limbs_r, limbs_a, limbs_b);
+    printf("\nFr_no_adx_rawMMul \n");
+    Fr_no_adx_rawMMul(limbs_r, limbs_a, limbs_b);
 
     for (size_t i = 0; i < SIZE; ++i)
         printf("%" PRIu64 "\t", limbs_r[i]);
@@ -48,8 +52,8 @@ int main(int argc, char* argv[]) {
     for (size_t i = 0; i < SIZE; ++i)
         printf("%" PRIu64 "\t", limbs_r[i]);
 
-    printf("\nrawMontgomerySquare \n");
-    rawMontgomerySquare(limbs_r, limbs_a);
+    printf("\nFr_no_adx_rawMSquare \n");
+    Fr_no_adx_rawMSquare(limbs_r, limbs_a);
 
     for (size_t i = 0; i < SIZE; ++i)
         printf("%" PRIu64 "\t", limbs_r[i]);
@@ -60,8 +64,8 @@ int main(int argc, char* argv[]) {
     for (size_t i = 0; i < SIZE; ++i)
         printf("%" PRIu64 "\t", limbs_r[i]);
 
-    printf("\nrawToMontgomery \n");
-    rawToMontgomery(limbs_r, limbs_a);
+    printf("\nFr_no_adx_rawToMontgomery \n");
+    Fr_no_adx_rawToMontgomery(limbs_r, limbs_a);
 
     for (size_t i = 0; i < SIZE; ++i)
         printf("%" PRIu64 "\t", limbs_r[i]);
@@ -76,8 +80,8 @@ int main(int argc, char* argv[]) {
     for (size_t i = 0; i < SIZE; ++i)
         printf("%" PRIu64 "\t", limbs_r[i]);
 
-    printf("\nrawFromMontgomery \n");
-    rawFromMontgomery(limbs_r, limbs_m);
+    printf("\nFr_no_adx_rawFromMontgomery \n");
+    Fr_no_adx_rawFromMontgomery(limbs_r, limbs_m);
 
     for (size_t i = 0; i < SIZE; ++i)
         printf("%" PRIu64 "\t", limbs_r[i]);
@@ -85,4 +89,8 @@ int main(int argc, char* argv[]) {
     printf("\n");
 
     return EXIT_SUCCESS;
+}
+
+void Fr_no_adx_fail() {
+    // dummy holder from asm call
 }

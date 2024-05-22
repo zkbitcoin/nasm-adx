@@ -17,6 +17,7 @@ np      dq      0xc2e1f593efffffff
 section .text
 global rawMontgomeryMul_mulM
 global rawMontgomerySquare
+global rawToMontgomery
 
 rawMontgomeryMul_mulM:
 
@@ -2012,6 +2013,12 @@ rawMontgomerySquare_mulM_done:
     ret
 
 
+rawToMontgomery:
 
+    push    rdx
+    lea     rdx, [R2]
+    call    rawMontgomeryMul_mulM
+    pop     rdx
+    ret
 
 

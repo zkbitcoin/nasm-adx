@@ -427,7 +427,6 @@ Fr_no_adx_longErr:
     push r14
     push r13
     push r12
-    mov rbp,rsp
     sub rsp,48
     mov rcx,rdx
     mov r11,[ np ]
@@ -861,7 +860,7 @@ Fr_no_adx_rawMMul_mulM_sq:
     sbb [rdi + 40],rax
 Fr_no_adx_rawMMul_mulM_done:
 ; Deallocate the reserved space on the stack
-    mov rsp,rbp
+    add rsp,48
     pop r12
     pop r13
     pop r14
@@ -876,7 +875,6 @@ Fr_no_adx_rawMMul_mulM_done:
     push r14
     push r13
     push r12
-    mov rbp,rsp
     sub rsp,48
     mov rcx,rdx
     mov r11,[ np ]
@@ -1148,7 +1146,7 @@ Fr_no_adx_rawFromMontgomery_mulM_sq:
     sbb [rdi + 40],rax
 Fr_no_adx_rawFromMontgomery_mulM_done:
 ; Deallocate the reserved space on the stack
-    mov rsp,rbp
+    add rsp,48
     pop r12
     pop r13
     pop r14
@@ -1163,7 +1161,6 @@ Fr_no_adx_rawFromMontgomery_mulM_done:
     push r14
     push r13
     push r12
-    mov rbp,rsp
     sub rsp,48
     mov rcx,rdx
     mov r11,[ np ]
@@ -1567,7 +1564,7 @@ Fr_no_adx_rawMSquare_mulM_sq:
     sbb [rdi + 40],rax
 Fr_no_adx_rawMSquare_mulM_done:
 ; Deallocate the reserved space on the stack
-    mov rsp,rbp
+    add rsp,48
     pop r12
     pop r13
     pop r14
